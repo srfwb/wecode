@@ -2,6 +2,7 @@ import { Group, Panel, Separator } from "react-resizable-panels";
 
 import { useIdeStore } from "../../state/ideStore";
 import { CodeEditor } from "../editor/CodeEditor";
+import { Preview } from "../preview/Preview";
 import { OpenFilesTabs } from "../tabs/OpenFilesTabs";
 import { FileTree } from "../tree/FileTree";
 
@@ -24,7 +25,7 @@ export function IDELayout() {
       <Separator className="ide__handle" />
 
       <Panel defaultSize={35} minSize={15} className="ide__pane ide__pane--preview">
-        <div className="placeholder">Preview (M5)</div>
+        <Preview />
       </Panel>
     </Group>
   );

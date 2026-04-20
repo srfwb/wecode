@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import type { VirtualFS } from "../vfs/VirtualFS";
 import type { VfsSnapshot } from "./protocol";
 
-const SYNC_DEBOUNCE_MS = 100;
+const SYNC_DEBOUNCE_MS = 30;
 
 // Tauri exposes custom URI schemes differently per platform.
 // Windows / Android: http://<scheme>.localhost/<path>
@@ -28,6 +28,12 @@ export async function syncVfs(snapshot: VfsSnapshot): Promise<void> {
   await invoke("sync_vfs", { files: snapshot });
 }
 
+// Bridge events — fires `synced` after every successful sync_vfs invoke so
+// downstream consumers (the preview iframe) can reload as soon as the latest
+// VFS snapshot has reached the Rust handler. Using a plain EventTarget avoids
+// pulling in a state library for what is essentially a singleton signal.
+export const bridgeEvents = new EventTarget();
+
 export async function attachVfsBridge(vfs: VirtualFS): Promise<() => void> {
   let timer: ReturnType<typeof setTimeout> | null = null;
 
@@ -35,6 +41,7 @@ export async function attachVfsBridge(vfs: VirtualFS): Promise<() => void> {
     timer = null;
     try {
       await syncVfs(vfs.snapshot());
+      bridgeEvents.dispatchEvent(new Event("synced"));
     } catch (err) {
       console.error("sync_vfs failed", err);
     }

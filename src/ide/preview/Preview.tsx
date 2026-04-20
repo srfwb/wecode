@@ -1,34 +1,28 @@
 import { useEffect, useMemo, useRef } from "react";
 
-import { previewUrl } from "../../tauri/bridge";
-import { vfs } from "../../vfs/VirtualFS";
-
-const RELOAD_DEBOUNCE_MS = 300;
+import { bridgeEvents, previewUrl } from "../../tauri/bridge";
 
 export function Preview() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const url = useMemo(() => previewUrl(), []);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    // Reassign src with a cache-busting query string. We can't call
-    // `iframe.contentWindow.location.reload()` because the iframe lives on a
+    // Reload only after the bridge confirms the latest VFS snapshot has been
+    // pushed to Rust — otherwise the iframe might fetch the previous state and
+    // we'd see a stale render.
+    //
+    // Reassign `src` with a cache-buster instead of calling
+    // `iframe.contentWindow.location.reload()`: the iframe lives on a
     // different origin (`wecode://localhost` or `http://wecode.localhost`)
-    // than the parent document, which throws a SecurityError. Setting `src`
-    // navigates the iframe regardless of origin.
-    const reload = () => {
-      timer = null;
+    // than the parent document, so cross-origin access throws SecurityError.
+    const onSynced = () => {
       const iframe = iframeRef.current;
       if (!iframe) return;
       iframe.src = `${url}?t=${Date.now()}`;
     };
-    const off = vfs.on("change", () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(reload, RELOAD_DEBOUNCE_MS);
-    });
+    bridgeEvents.addEventListener("synced", onSynced);
     return () => {
-      if (timer) clearTimeout(timer);
-      off();
+      bridgeEvents.removeEventListener("synced", onSynced);
     };
   }, [url]);
 

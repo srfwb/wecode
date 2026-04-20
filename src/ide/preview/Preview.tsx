@@ -11,17 +11,16 @@ export function Preview() {
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
+    // Reassign src with a cache-busting query string. We can't call
+    // `iframe.contentWindow.location.reload()` because the iframe lives on a
+    // different origin (`wecode://localhost` or `http://wecode.localhost`)
+    // than the parent document, which throws a SecurityError. Setting `src`
+    // navigates the iframe regardless of origin.
     const reload = () => {
       timer = null;
       const iframe = iframeRef.current;
       if (!iframe) return;
-      const win = iframe.contentWindow;
-      if (win) {
-        win.location.reload();
-      } else {
-        // Fallback: re-assign src
-        iframe.src = url;
-      }
+      iframe.src = `${url}?t=${Date.now()}`;
     };
     const off = vfs.on("change", () => {
       if (timer) clearTimeout(timer);

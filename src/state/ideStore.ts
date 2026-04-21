@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+import type { PreviewDevice } from "../ide/preview/devices";
 import { vfs } from "../vfs/VirtualFS";
 
 export interface EditorCursor {
@@ -11,11 +12,13 @@ interface IdeState {
   openFiles: string[];
   activeFile: string | null;
   editorCursor: EditorCursor | null;
+  previewDevice: PreviewDevice;
 
   openFile: (path: string) => void;
   closeFile: (path: string) => void;
   setActiveFile: (path: string) => void;
   setEditorCursor: (cursor: EditorCursor | null) => void;
+  setPreviewDevice: (device: PreviewDevice) => void;
   hydrate: (state: { openFiles: string[]; activeFile: string | null }) => void;
 }
 
@@ -23,6 +26,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   openFiles: [],
   activeFile: null,
   editorCursor: null,
+  previewDevice: "desktop",
 
   openFile: (path) =>
     set((prev) => {
@@ -57,6 +61,8 @@ export const useIdeStore = create<IdeState>((set) => ({
       }
       return { editorCursor: cursor };
     }),
+
+  setPreviewDevice: (device) => set({ previewDevice: device }),
 
   hydrate: ({ openFiles, activeFile }) =>
     set(() => {

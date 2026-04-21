@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
@@ -30,8 +30,8 @@ export function FileTree() {
 
   const nodes = buildTree(vfs.listFiles());
 
-  const closeMenu = () => setMenu(null);
-  const closePrompt = () => setPrompt(null);
+  const closeMenu = useCallback(() => setMenu(null), []);
+  const closePrompt = useCallback(() => setPrompt(null), []);
 
   const submitPrompt = (name: string) => {
     if (!prompt) return;

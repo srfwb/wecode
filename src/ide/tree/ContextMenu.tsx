@@ -42,9 +42,7 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
   const onMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
     e.preventDefault();
-    const buttons = Array.from(
-      ref.current?.querySelectorAll<HTMLButtonElement>("button") ?? [],
-    );
+    const buttons = Array.from(ref.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
     if (buttons.length === 0) return;
     const active = document.activeElement;
     const index = buttons.findIndex((b) => b === active);

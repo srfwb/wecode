@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
+import { hoverHints } from "./hoverHints";
 import { languageFor } from "./languages";
 import { editorTheme } from "./theme";
 
@@ -30,6 +31,7 @@ function buildState(
     keymap.of([...defaultKeymap, ...historyKeymap]),
     editorTheme,
     EditorView.lineWrapping,
+    hoverHints,
     ...languageFor(path),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {

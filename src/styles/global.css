@@ -222,6 +222,16 @@ button {
 .t-btn.accent:hover {
   background: var(--accent-soft);
 }
+.t-btn--disabled,
+.t-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.t-btn--disabled:hover,
+.t-btn[disabled]:hover {
+  background: none;
+  color: var(--fg-1);
+}
 
 .toolbar-right {
   display: flex;

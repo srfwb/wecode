@@ -18,13 +18,25 @@ export function Toolbar() {
       </div>
 
       <div className="toolbar-right">
-        <button type="button" className="t-btn" title="Annuler" aria-label="Annuler">
+        <button
+          type="button"
+          className="t-btn t-btn--disabled"
+          title="Annuler — bientôt disponible"
+          aria-label="Annuler — bientôt disponible"
+          disabled
+        >
           <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M9 14 4 9l5-5" />
             <path d="M4 9h10a6 6 0 0 1 0 12h-3" />
           </svg>
         </button>
-        <button type="button" className="t-btn" title="Formater" aria-label="Formater">
+        <button
+          type="button"
+          className="t-btn t-btn--disabled"
+          title="Formater — bientôt disponible"
+          aria-label="Formater — bientôt disponible"
+          disabled
+        >
           <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 6h16M4 12h10M4 18h16" />
           </svg>

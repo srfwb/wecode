@@ -1,20 +1,11 @@
-import { load, Store } from "@tauri-apps/plugin-store";
-
+import { persistedStore } from "../tauri/persistedStore";
 import { DEFAULT_FILES } from "./defaults";
 import type { VirtualFS } from "./VirtualFS";
 
-const STORE_PATH = "wecode.store.json";
 const STORE_KEY = "vfs.v1";
 const SAVE_DEBOUNCE_MS = 500;
 
-let storePromise: Promise<Store> | null = null;
-
-function getStore(): Promise<Store> {
-  if (!storePromise) {
-    storePromise = load(STORE_PATH, { autoSave: false, defaults: {} });
-  }
-  return storePromise;
-}
+const getStore = persistedStore("wecode.store.json");
 
 export async function loadIntoVfs(vfs: VirtualFS): Promise<void> {
   const store = await getStore();

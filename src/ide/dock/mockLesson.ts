@@ -1,14 +1,16 @@
 export type CheckpointStatus = "done" | "active" | "todo";
 
 export interface Checkpoint {
+  id: string;
   label: string;
   status: CheckpointStatus;
   meta?: string;
 }
 
+export type LessonPart = { kind: "text"; value: string } | { kind: "code"; value: string };
+
 export interface LessonParagraph {
-  /** HTML string. Trusted — origin is bundled source, never user input. */
-  html: string;
+  parts: LessonPart[];
 }
 
 export interface LessonContent {
@@ -32,17 +34,50 @@ export const MOCK_LESSON: LessonContent = {
   heading: "Donne un style à ta page",
   paragraphs: [
     {
-      html: `Tu as monté le squelette avec du <span class="inline-code">HTML</span>. Passons maintenant au <span class="inline-code">CSS</span> pour contrôler l'aspect visuel — couleurs, typographie, espacements. Le CSS vit dans un fichier séparé, lié depuis ton HTML.`,
+      parts: [
+        { kind: "text", value: "Tu as monté le squelette avec du " },
+        { kind: "code", value: "HTML" },
+        { kind: "text", value: ". Passons maintenant au " },
+        { kind: "code", value: "CSS" },
+        {
+          kind: "text",
+          value:
+            " pour contrôler l'aspect visuel — couleurs, typographie, espacements. Le CSS vit dans un fichier séparé, lié depuis ton HTML.",
+        },
+      ],
     },
     {
-      html: `Lie <span class="inline-code">style.css</span> dans le <span class="inline-code">&lt;head&gt;</span> de ta page avec une balise <span class="inline-code">&lt;link&gt;</span>. L'aperçu se met à jour dès que tu modifies le code.`,
+      parts: [
+        { kind: "text", value: "Lie " },
+        { kind: "code", value: "style.css" },
+        { kind: "text", value: " dans le " },
+        { kind: "code", value: "<head>" },
+        { kind: "text", value: " de ta page avec une balise " },
+        { kind: "code", value: "<link>" },
+        { kind: "text", value: ". L'aperçu se met à jour dès que tu modifies le code." },
+      ],
     },
   ],
   checkpoints: [
-    { label: "Créer un fichier nommé style.css", status: "done", meta: "fait" },
-    { label: "Ajouter un sélecteur body", status: "done", meta: "fait" },
-    { label: "Lier style.css depuis index.html", status: "active", meta: "vérification…" },
-    { label: "Changer la couleur de fond de la page", status: "todo", meta: "—" },
+    {
+      id: "create-stylesheet",
+      label: "Créer un fichier nommé style.css",
+      status: "done",
+      meta: "fait",
+    },
+    { id: "body-selector", label: "Ajouter un sélecteur body", status: "done", meta: "fait" },
+    {
+      id: "link-stylesheet",
+      label: "Lier style.css depuis index.html",
+      status: "active",
+      meta: "vérification…",
+    },
+    {
+      id: "change-bg",
+      label: "Changer la couleur de fond de la page",
+      status: "todo",
+      meta: "—",
+    },
   ],
   hintFooter: "Survole un mot-clé dans l'éditeur pour une explication rapide.",
 };

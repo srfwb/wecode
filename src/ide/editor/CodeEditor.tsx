@@ -9,6 +9,21 @@ import { hoverHints } from "./hoverHints";
 import { languageFor } from "./languages";
 import { editorTheme } from "./theme";
 
+// Cap the per-file `EditorState` cache so a long session with many tabs
+// doesn't leak memory. Entries past the cap drop in insertion order (Map
+// preserves it), which approximates a simple LRU when we re-insert on touch.
+const STATE_CACHE_MAX = 50;
+
+function cacheSet(cache: Map<string, EditorState>, path: string, state: EditorState): void {
+  if (cache.has(path)) cache.delete(path);
+  cache.set(path, state);
+  while (cache.size > STATE_CACHE_MAX) {
+    const oldest = cache.keys().next().value;
+    if (oldest === undefined) break;
+    cache.delete(oldest);
+  }
+}
+
 interface CodeEditorProps {
   path: string | null;
 }
@@ -58,7 +73,19 @@ export function CodeEditor({ path }: CodeEditorProps) {
     });
     viewRef.current = view;
     const stateCache = stateCacheRef.current;
+
+    // Drop cached editor states when their file disappears or gets renamed —
+    // otherwise the cache holds zombie entries keyed by dead paths.
+    const offVfs = vfs.on("change", (change) => {
+      if (change.kind === "delete") {
+        stateCache.delete(change.path);
+      } else if (change.kind === "rename" && change.oldPath) {
+        stateCache.delete(change.oldPath);
+      }
+    });
+
     return () => {
+      offVfs();
       view.destroy();
       viewRef.current = null;
       stateCache.clear();
@@ -91,14 +118,14 @@ export function CodeEditor({ path }: CodeEditorProps) {
       initialDoc,
       (next) => {
         const currentState = viewRef.current?.state;
-        if (currentState) stateCacheRef.current.set(path, currentState);
+        if (currentState) cacheSet(stateCacheRef.current, path, currentState);
         vfs.writeFile(path, next);
       },
       (cursor) => {
         useIdeStore.getState().setEditorCursor(cursor);
       },
     );
-    stateCacheRef.current.set(path, state);
+    cacheSet(stateCacheRef.current, path, state);
     view.setState(state);
     setEditorCursor(cursorFromView(view));
   }, [path]);

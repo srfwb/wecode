@@ -1,12 +1,18 @@
 import { create } from "zustand";
 
-import type { PreviewDevice } from "../ide/preview/devices";
 import { vfs } from "../vfs/VirtualFS";
 
 export interface EditorCursor {
   line: number;
   col: number;
 }
+
+/**
+ * UI-level preview viewport choices. Declared here (rather than under
+ * `src/ide/preview/`) so the store doesn't import UI modules — the dependency
+ * flows UI → state, never the other way.
+ */
+export type PreviewDevice = "mobile" | "desktop";
 
 interface IdeState {
   openFiles: string[];
@@ -78,7 +84,7 @@ export function bootstrapIdeStore(): () => void {
   if (store.openFiles.length === 0) {
     const all = vfs.listFiles();
     if (all.length > 0) {
-      useIdeStore.setState({ openFiles: all, activeFile: all[0] });
+      useIdeStore.setState({ openFiles: all, activeFile: all[0] ?? null });
     }
   }
 

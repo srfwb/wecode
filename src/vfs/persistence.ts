@@ -43,9 +43,7 @@ export function attachAutoSave(vfs: VirtualFS): () => void {
     const store = await getStore();
     await store.set(STORE_KEY, vfs.snapshot());
     await store.save();
-    persistenceEvents.dispatchEvent(
-      new CustomEvent("saved", { detail: { at: Date.now() } }),
-    );
+    persistenceEvents.dispatchEvent(new CustomEvent("saved", { detail: { at: Date.now() } }));
   };
 
   const off = vfs.on("change", () => {

@@ -263,12 +263,20 @@ button {
 }
 
 /* ============================================================
-   IDE horizontal group (tree | editor | preview)
+   IDE main (workspace + dock)
    ============================================================ */
 
-.ide {
-  flex: 1 1 auto;
+.ide-main {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100%;
   min-height: 0;
+  flex: 1 1 auto;
+}
+
+.ide {
+  min-height: 0;
+  min-width: 0;
 }
 
 .ide__pane {
@@ -773,4 +781,197 @@ button {
 }
 .modal__actions button[type="submit"]:hover {
   background: oklch(0.85 0.13 75);
+}
+
+/* ============================================================
+   Lesson dock (UI shell — mocked content until the lesson engine lands)
+   ============================================================ */
+
+.dock {
+  background: var(--bg-0);
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-direction: column;
+  max-height: 44vh;
+  transition: max-height 0.2s ease;
+  overflow: hidden;
+}
+.dock--collapsed {
+  max-height: 40px;
+}
+
+.dock-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px;
+  width: 100%;
+  color: var(--fg-0);
+  font: inherit;
+  text-align: left;
+  flex: none;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+.dock-head:hover {
+  background: var(--bg-1);
+}
+.dock-head .chev {
+  color: var(--fg-3);
+  transition: transform 0.15s ease;
+}
+.dock--collapsed .dock-head .chev {
+  transform: rotate(-90deg);
+}
+
+.lesson-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.82em;
+  font-weight: 500;
+}
+.lesson-chip .num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-0);
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 0.78em;
+  font-weight: 700;
+}
+
+.progress {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--fg-2);
+  font-size: 0.88em;
+}
+.progress-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.progress-ring .bg {
+  stroke: var(--line);
+}
+.progress-ring .fg {
+  stroke: var(--accent);
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.dock-body {
+  padding: 4px 14px 14px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 22px;
+}
+
+.lesson-text h2 {
+  margin: 6px 0 10px;
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg-0);
+}
+.lesson-text p {
+  margin: 0 0 10px;
+  color: var(--fg-1);
+  line-height: 1.6;
+  font-size: 0.96em;
+}
+.inline-code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--bg-2);
+  color: var(--fg-0);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.lesson-hint {
+  color: var(--fg-2);
+  font-size: 0.88em;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lesson-hint .i {
+  color: var(--accent);
+}
+
+.checkpoints {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.cp {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 12px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.92em;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+.cp:hover {
+  border-color: var(--line);
+}
+.cp .tick {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  font-size: 0.75em;
+  flex: none;
+}
+.cp--done .tick {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-0);
+}
+.cp--active {
+  background: var(--accent-soft);
+  border-color: var(--accent-dim);
+}
+.cp--active .tick {
+  border-color: var(--accent);
+}
+.cp .label {
+  color: var(--fg-0);
+}
+.cp--done .label {
+  color: var(--fg-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--fg-3);
+}
+.cp .meta {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  color: var(--fg-3);
+}
+.cp .meta--live {
+  color: var(--accent);
 }

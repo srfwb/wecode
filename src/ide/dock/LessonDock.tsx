@@ -1,5 +1,5 @@
 import { useIdeStore } from "../../state/ideStore";
-import { MOCK_LESSON, type Checkpoint } from "./mockLesson";
+import { MOCK_LESSON, type Checkpoint, type LessonParagraph } from "./mockLesson";
 import { ProgressRing } from "./ProgressRing";
 
 export function LessonDock() {
@@ -38,11 +38,7 @@ export function LessonDock() {
           <div className="lesson-text">
             <h2>{lesson.heading}</h2>
             {lesson.paragraphs.map((p, i) => (
-              <p
-                key={i}
-                // Content is bundled at build time (see mockLesson.ts) — never user input.
-                dangerouslySetInnerHTML={{ __html: p.html }}
-              />
+              <LessonParagraphView key={i} paragraph={p} />
             ))}
             {lesson.hintFooter && (
               <p className="lesson-hint">
@@ -56,13 +52,29 @@ export function LessonDock() {
           </div>
 
           <div className="checkpoints">
-            {lesson.checkpoints.map((cp, i) => (
-              <CheckpointRow key={i} checkpoint={cp} />
+            {lesson.checkpoints.map((cp) => (
+              <CheckpointRow key={cp.id} checkpoint={cp} />
             ))}
           </div>
         </div>
       )}
     </aside>
+  );
+}
+
+function LessonParagraphView({ paragraph }: { paragraph: LessonParagraph }) {
+  return (
+    <p>
+      {paragraph.parts.map((part, i) =>
+        part.kind === "code" ? (
+          <span key={i} className="inline-code">
+            {part.value}
+          </span>
+        ) : (
+          <span key={i}>{part.value}</span>
+        ),
+      )}
+    </p>
   );
 }
 

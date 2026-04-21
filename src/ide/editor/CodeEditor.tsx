@@ -73,7 +73,19 @@ export function CodeEditor({ path }: CodeEditorProps) {
     });
     viewRef.current = view;
     const stateCache = stateCacheRef.current;
+
+    // Drop cached editor states when their file disappears or gets renamed —
+    // otherwise the cache holds zombie entries keyed by dead paths.
+    const offVfs = vfs.on("change", (change) => {
+      if (change.kind === "delete") {
+        stateCache.delete(change.path);
+      } else if (change.kind === "rename" && change.oldPath) {
+        stateCache.delete(change.oldPath);
+      }
+    });
+
     return () => {
+      offVfs();
       view.destroy();
       viewRef.current = null;
       stateCache.clear();

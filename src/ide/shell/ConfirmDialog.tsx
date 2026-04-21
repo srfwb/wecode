@@ -35,7 +35,12 @@ export function ConfirmDialog({
 
   return (
     <div className="modal-backdrop" onClick={onCancel}>
-      <div className="modal" onClick={(e) => e.stopPropagation()} role="alertdialog" aria-modal="true">
+      <div
+        className="modal"
+        onClick={(e) => e.stopPropagation()}
+        role="alertdialog"
+        aria-modal="true"
+      >
         <div className="modal__title">{title}</div>
         <div className="modal__body">{message}</div>
         <div className="modal__actions">

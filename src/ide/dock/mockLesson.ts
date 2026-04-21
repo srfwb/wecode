@@ -7,9 +7,10 @@ export interface Checkpoint {
   meta?: string;
 }
 
+export type LessonPart = { kind: "text"; value: string } | { kind: "code"; value: string };
+
 export interface LessonParagraph {
-  /** HTML string. Trusted — origin is bundled source, never user input. */
-  html: string;
+  parts: LessonPart[];
 }
 
 export interface LessonContent {
@@ -33,10 +34,28 @@ export const MOCK_LESSON: LessonContent = {
   heading: "Donne un style à ta page",
   paragraphs: [
     {
-      html: `Tu as monté le squelette avec du <span class="inline-code">HTML</span>. Passons maintenant au <span class="inline-code">CSS</span> pour contrôler l'aspect visuel — couleurs, typographie, espacements. Le CSS vit dans un fichier séparé, lié depuis ton HTML.`,
+      parts: [
+        { kind: "text", value: "Tu as monté le squelette avec du " },
+        { kind: "code", value: "HTML" },
+        { kind: "text", value: ". Passons maintenant au " },
+        { kind: "code", value: "CSS" },
+        {
+          kind: "text",
+          value:
+            " pour contrôler l'aspect visuel — couleurs, typographie, espacements. Le CSS vit dans un fichier séparé, lié depuis ton HTML.",
+        },
+      ],
     },
     {
-      html: `Lie <span class="inline-code">style.css</span> dans le <span class="inline-code">&lt;head&gt;</span> de ta page avec une balise <span class="inline-code">&lt;link&gt;</span>. L'aperçu se met à jour dès que tu modifies le code.`,
+      parts: [
+        { kind: "text", value: "Lie " },
+        { kind: "code", value: "style.css" },
+        { kind: "text", value: " dans le " },
+        { kind: "code", value: "<head>" },
+        { kind: "text", value: " de ta page avec une balise " },
+        { kind: "code", value: "<link>" },
+        { kind: "text", value: ". L'aperçu se met à jour dès que tu modifies le code." },
+      ],
     },
   ],
   checkpoints: [

@@ -1,8 +1,6 @@
-import { load, Store } from "@tauri-apps/plugin-store";
-
+import { persistedStore } from "../tauri/persistedStore";
 import { useIdeStore } from "./ideStore";
 
-const STORE_PATH = "wecode.ide.json";
 const STORE_KEY = "tabs.v1";
 const SAVE_DEBOUNCE_MS = 300;
 
@@ -11,14 +9,7 @@ interface PersistedTabs {
   activeFile: string | null;
 }
 
-let storePromise: Promise<Store> | null = null;
-
-function getStore(): Promise<Store> {
-  if (!storePromise) {
-    storePromise = load(STORE_PATH, { autoSave: false, defaults: {} });
-  }
-  return storePromise;
-}
+const getStore = persistedStore("wecode.ide.json");
 
 export async function loadIdeState(): Promise<void> {
   const store = await getStore();

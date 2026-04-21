@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
@@ -28,5 +28,26 @@ export default defineConfig(async () => ({
       // 3. tell Vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
     },
+  },
+
+  build: {
+    // Split CodeMirror (~240 KB gzipped) and React into their own chunks so the
+    // initial payload stays small and browser cache invalidation is finer-grained.
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          codemirror: [
+            "@codemirror/state",
+            "@codemirror/view",
+            "@codemirror/commands",
+            "@codemirror/language",
+            "@codemirror/lang-html",
+            "@codemirror/lang-css",
+          ],
+          react: ["react", "react-dom"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
   },
 }));

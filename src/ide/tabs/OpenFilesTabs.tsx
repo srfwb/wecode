@@ -1,5 +1,6 @@
 import { useIdeStore } from "../../state/ideStore";
 import { basename } from "../../vfs/paths";
+import { FileTypeIcon } from "../shell/FileTypeIcon";
 
 export function OpenFilesTabs() {
   const openFiles = useIdeStore((s) => s.openFiles);
@@ -17,6 +18,7 @@ export function OpenFilesTabs() {
         const isActive = path === activeFile;
         return (
           <div key={path} className={isActive ? "tab tab--active" : "tab"} title={path}>
+            <FileTypeIcon path={path} />
             <button type="button" className="tab__label" onClick={() => setActiveFile(path)}>
               {basename(path)}
             </button>

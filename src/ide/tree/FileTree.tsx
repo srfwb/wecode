@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
+import { FileTypeIcon } from "../shell/FileTypeIcon";
 import { ContextMenu, type ContextMenuItem } from "./ContextMenu";
 import { buildTree, type TreeNode } from "./tree";
 
@@ -81,9 +82,28 @@ export function FileTree() {
       })
     : [];
 
+  const startNewFileAtRoot = () => setPrompt({ kind: "create", parentPath: "/", initial: "" });
+
   return (
     <div className="file-tree" onContextMenu={onRootContextMenu} data-version={version}>
-      <div className="file-tree__header">Fichiers</div>
+      <div className="sb-rail">
+        <span className="label">Fichiers</span>
+        <div className="tools">
+          <button
+            type="button"
+            className="ico-btn"
+            title="Nouveau fichier"
+            aria-label="Nouveau fichier"
+            onClick={startNewFileAtRoot}
+          >
+            <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+              <path d="M14 3v5h5" />
+              <path d="M12 12v6M9 15h6" />
+            </svg>
+          </button>
+        </div>
+      </div>
       <ul className="file-tree__list">
         {nodes.map((node) => (
           <TreeRow
@@ -101,6 +121,13 @@ export function FileTree() {
         ))}
       </ul>
       {nodes.length === 0 && <div className="file-tree__empty">Aucun fichier</div>}
+
+      <div className="sb-foot">
+        <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+        </svg>
+        Sauvegarde auto active
+      </div>
 
       {menu && <ContextMenu x={menu.x} y={menu.y} items={menuItems} onClose={closeMenu} />}
 
@@ -138,7 +165,7 @@ function TreeRow({ node, depth, activeFile, onSelect, onContextMenu }: TreeRowPr
           style={indent}
           onContextMenu={(e) => onContextMenu(e, { kind: "folder", path: node.path })}
         >
-          <span className="file-tree__icon">📁</span>
+          <FileTypeIcon path={node.path} folder />
           <span>{node.name}</span>
         </div>
         <ul className="file-tree__list">
@@ -166,7 +193,7 @@ function TreeRow({ node, depth, activeFile, onSelect, onContextMenu }: TreeRowPr
         onClick={() => onSelect(node.path)}
         onContextMenu={(e) => onContextMenu(e, { kind: "file", path: node.path })}
       >
-        <span className="file-tree__icon">📄</span>
+        <FileTypeIcon path={node.path} />
         <span>{node.name}</span>
       </div>
     </li>

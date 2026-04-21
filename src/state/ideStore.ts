@@ -2,19 +2,27 @@ import { create } from "zustand";
 
 import { vfs } from "../vfs/VirtualFS";
 
+export interface EditorCursor {
+  line: number;
+  col: number;
+}
+
 interface IdeState {
   openFiles: string[];
   activeFile: string | null;
+  editorCursor: EditorCursor | null;
 
   openFile: (path: string) => void;
   closeFile: (path: string) => void;
   setActiveFile: (path: string) => void;
+  setEditorCursor: (cursor: EditorCursor | null) => void;
   hydrate: (state: { openFiles: string[]; activeFile: string | null }) => void;
 }
 
 export const useIdeStore = create<IdeState>((set) => ({
   openFiles: [],
   activeFile: null,
+  editorCursor: null,
 
   openFile: (path) =>
     set((prev) => {
@@ -35,6 +43,20 @@ export const useIdeStore = create<IdeState>((set) => ({
     }),
 
   setActiveFile: (path) => set({ activeFile: path }),
+
+  setEditorCursor: (cursor) =>
+    set((prev) => {
+      if (!cursor && !prev.editorCursor) return prev;
+      if (
+        cursor &&
+        prev.editorCursor &&
+        cursor.line === prev.editorCursor.line &&
+        cursor.col === prev.editorCursor.col
+      ) {
+        return prev;
+      }
+      return { editorCursor: cursor };
+    }),
 
   hydrate: ({ openFiles, activeFile }) =>
     set(() => {

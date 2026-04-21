@@ -78,7 +78,7 @@ export function bootstrapIdeStore(): () => void {
   if (store.openFiles.length === 0) {
     const all = vfs.listFiles();
     if (all.length > 0) {
-      useIdeStore.setState({ openFiles: all, activeFile: all[0] });
+      useIdeStore.setState({ openFiles: all, activeFile: all[0] ?? null });
     }
   }
 

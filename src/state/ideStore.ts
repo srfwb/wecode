@@ -13,13 +13,19 @@ interface IdeState {
   activeFile: string | null;
   editorCursor: EditorCursor | null;
   previewDevice: PreviewDevice;
+  dockCollapsed: boolean;
 
   openFile: (path: string) => void;
   closeFile: (path: string) => void;
   setActiveFile: (path: string) => void;
   setEditorCursor: (cursor: EditorCursor | null) => void;
   setPreviewDevice: (device: PreviewDevice) => void;
-  hydrate: (state: { openFiles: string[]; activeFile: string | null }) => void;
+  setDockCollapsed: (collapsed: boolean) => void;
+  hydrate: (state: {
+    openFiles: string[];
+    activeFile: string | null;
+    dockCollapsed?: boolean;
+  }) => void;
 }
 
 export const useIdeStore = create<IdeState>((set) => ({
@@ -27,6 +33,7 @@ export const useIdeStore = create<IdeState>((set) => ({
   activeFile: null,
   editorCursor: null,
   previewDevice: "desktop",
+  dockCollapsed: false,
 
   openFile: (path) =>
     set((prev) => {
@@ -64,12 +71,16 @@ export const useIdeStore = create<IdeState>((set) => ({
 
   setPreviewDevice: (device) => set({ previewDevice: device }),
 
-  hydrate: ({ openFiles, activeFile }) =>
+  setDockCollapsed: (collapsed) => set({ dockCollapsed: collapsed }),
+
+  hydrate: ({ openFiles, activeFile, dockCollapsed }) =>
     set(() => {
       const known = new Set(vfs.listFiles());
       const cleaned = openFiles.filter((p) => known.has(p));
       const active = activeFile && cleaned.includes(activeFile) ? activeFile : (cleaned[0] ?? null);
-      return { openFiles: cleaned, activeFile: active };
+      const next: Partial<IdeState> = { openFiles: cleaned, activeFile: active };
+      if (typeof dockCollapsed === "boolean") next.dockCollapsed = dockCollapsed;
+      return next;
     }),
 }));
 

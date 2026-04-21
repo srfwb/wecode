@@ -9,6 +9,7 @@ const SAVE_DEBOUNCE_MS = 300;
 interface PersistedTabs {
   openFiles: string[];
   activeFile: string | null;
+  dockCollapsed?: boolean;
 }
 
 let storePromise: Promise<Store> | null = null;
@@ -33,14 +34,22 @@ export function attachIdeAutoSave(): () => void {
 
   const flush = async () => {
     timer = null;
-    const { openFiles, activeFile } = useIdeStore.getState();
+    const { openFiles, activeFile, dockCollapsed } = useIdeStore.getState();
     const store = await getStore();
-    await store.set(STORE_KEY, { openFiles, activeFile } satisfies PersistedTabs);
+    await store.set(STORE_KEY, {
+      openFiles,
+      activeFile,
+      dockCollapsed,
+    } satisfies PersistedTabs);
     await store.save();
   };
 
   return useIdeStore.subscribe((state, prev) => {
-    if (state.openFiles === prev.openFiles && state.activeFile === prev.activeFile) {
+    if (
+      state.openFiles === prev.openFiles &&
+      state.activeFile === prev.activeFile &&
+      state.dockCollapsed === prev.dockCollapsed
+    ) {
       return;
     }
     if (timer) clearTimeout(timer);

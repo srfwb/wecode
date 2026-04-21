@@ -1,10 +1,10 @@
-import { useState } from "react";
-
+import { useIdeStore } from "../../state/ideStore";
 import { MOCK_LESSON, type Checkpoint, type LessonParagraph } from "./mockLesson";
 import { ProgressRing } from "./ProgressRing";
 
 export function LessonDock() {
-  const [collapsed, setCollapsed] = useState(false);
+  const collapsed = useIdeStore((s) => s.dockCollapsed);
+  const setCollapsed = useIdeStore((s) => s.setDockCollapsed);
   const lesson = MOCK_LESSON;
   const done = lesson.checkpoints.filter((cp) => cp.status === "done").length;
   const total = lesson.checkpoints.length;
@@ -15,7 +15,7 @@ export function LessonDock() {
       <button
         type="button"
         className="dock-head"
-        onClick={() => setCollapsed((c) => !c)}
+        onClick={() => setCollapsed(!collapsed)}
         aria-expanded={!collapsed}
       >
         <svg className="i-lg chev" viewBox="0 0 24 24" aria-hidden="true">

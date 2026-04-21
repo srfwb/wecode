@@ -56,8 +56,8 @@ export function LessonDock() {
           </div>
 
           <div className="checkpoints">
-            {lesson.checkpoints.map((cp, i) => (
-              <CheckpointRow key={i} checkpoint={cp} />
+            {lesson.checkpoints.map((cp) => (
+              <CheckpointRow key={cp.id} checkpoint={cp} />
             ))}
           </div>
         </div>

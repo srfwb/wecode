@@ -1,6 +1,7 @@
 export type CheckpointStatus = "done" | "active" | "todo";
 
 export interface Checkpoint {
+  id: string;
   label: string;
   status: CheckpointStatus;
   meta?: string;
@@ -39,10 +40,25 @@ export const MOCK_LESSON: LessonContent = {
     },
   ],
   checkpoints: [
-    { label: "Créer un fichier nommé style.css", status: "done", meta: "fait" },
-    { label: "Ajouter un sélecteur body", status: "done", meta: "fait" },
-    { label: "Lier style.css depuis index.html", status: "active", meta: "vérification…" },
-    { label: "Changer la couleur de fond de la page", status: "todo", meta: "—" },
+    {
+      id: "create-stylesheet",
+      label: "Créer un fichier nommé style.css",
+      status: "done",
+      meta: "fait",
+    },
+    { id: "body-selector", label: "Ajouter un sélecteur body", status: "done", meta: "fait" },
+    {
+      id: "link-stylesheet",
+      label: "Lier style.css depuis index.html",
+      status: "active",
+      meta: "vérification…",
+    },
+    {
+      id: "change-bg",
+      label: "Changer la couleur de fond de la page",
+      status: "todo",
+      meta: "—",
+    },
   ],
   hintFooter: "Survole un mot-clé dans l'éditeur pour une explication rapide.",
 };

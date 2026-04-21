@@ -10,11 +10,22 @@ import { vfs } from "./vfs/VirtualFS";
 
 async function bootstrap() {
   await loadIntoVfs(vfs);
-  attachAutoSave(vfs);
-  bootstrapIdeStore();
+  const disposers: Array<() => void> = [];
+  disposers.push(attachAutoSave(vfs));
+  disposers.push(bootstrapIdeStore());
   await loadIdeState();
-  attachIdeAutoSave();
-  await attachVfsBridge(vfs);
+  disposers.push(attachIdeAutoSave());
+  disposers.push(await attachVfsBridge(vfs));
+
+  // Pop every listener on app close / dev HMR so they never stack up across
+  // module reloads.
+  const dispose = () => {
+    while (disposers.length) disposers.pop()?.();
+  };
+  window.addEventListener("beforeunload", dispose, { once: true });
+  if (import.meta.hot) {
+    import.meta.hot.dispose(dispose);
+  }
 
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>

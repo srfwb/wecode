@@ -91,8 +91,37 @@ export function FileTree() {
 
   const startNewFileAtRoot = () => setPrompt({ kind: "create", parentPath: "/", initial: "" });
 
+  const visibleFiles = collectVisibleFiles(nodes);
+
+  const onTreeKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "Enter") return;
+    if (visibleFiles.length === 0) return;
+
+    const index = activeFile ? visibleFiles.indexOf(activeFile) : -1;
+
+    if (e.key === "Enter" && activeFile) {
+      e.preventDefault();
+      openFile(activeFile);
+      return;
+    }
+
+    e.preventDefault();
+    const step = e.key === "ArrowDown" ? 1 : -1;
+    const nextIdx = (index === -1 ? 0 : index + step + visibleFiles.length) % visibleFiles.length;
+    const next = visibleFiles[nextIdx];
+    if (next) openFile(next);
+  };
+
   return (
-    <div className="file-tree" onContextMenu={onRootContextMenu} data-version={version}>
+    <div
+      className="file-tree"
+      onContextMenu={onRootContextMenu}
+      onKeyDown={onTreeKeyDown}
+      tabIndex={0}
+      role="tree"
+      aria-label="Fichiers"
+      data-version={version}
+    >
       <div className="sb-rail">
         <span className="label">Fichiers</span>
         <div className="tools">
@@ -205,6 +234,15 @@ function TreeRow({ node, depth, activeFile, onSelect, onContextMenu }: TreeRowPr
       </div>
     </li>
   );
+}
+
+function collectVisibleFiles(nodes: TreeNode[]): string[] {
+  const out: string[] = [];
+  for (const node of nodes) {
+    if (node.type === "file") out.push(node.path);
+    else out.push(...collectVisibleFiles(node.children));
+  }
+  return out;
 }
 
 function buildMenuItems(

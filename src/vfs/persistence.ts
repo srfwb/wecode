@@ -16,6 +16,13 @@ function getStore(): Promise<Store> {
   return storePromise;
 }
 
+/**
+ * Fires `saved` after every successful VFS-to-disk flush. The status bar
+ * subscribes to render "Sauvegardé il y a Xs". Keeping this out of the store
+ * avoids rendering a React tree every 500 ms of typing.
+ */
+export const persistenceEvents = new EventTarget();
+
 export async function loadIntoVfs(vfs: VirtualFS): Promise<void> {
   const store = await getStore();
   const persisted = await store.get<Record<string, string>>(STORE_KEY);
@@ -36,6 +43,9 @@ export function attachAutoSave(vfs: VirtualFS): () => void {
     const store = await getStore();
     await store.set(STORE_KEY, vfs.snapshot());
     await store.save();
+    persistenceEvents.dispatchEvent(
+      new CustomEvent("saved", { detail: { at: Date.now() } }),
+    );
   };
 
   const off = vfs.on("change", () => {

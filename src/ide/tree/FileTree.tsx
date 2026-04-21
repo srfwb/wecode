@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
+import { SHORTCUT_NEW_FILE, shortcutEvents } from "../shell/shortcuts";
 import { FileTypeIcon } from "../shell/FileTypeIcon";
 import { ContextMenu, type ContextMenuItem } from "./ContextMenu";
 import { buildTree, type TreeNode } from "./tree";
@@ -27,6 +28,12 @@ export function FileTree() {
   const activeFile = useIdeStore((s) => s.activeFile);
 
   useEffect(() => vfs.on("change", () => setVersion((v) => v + 1)), []);
+
+  useEffect(() => {
+    const onNewFile = () => setPrompt({ kind: "create", parentPath: "/", initial: "" });
+    shortcutEvents.addEventListener(SHORTCUT_NEW_FILE, onNewFile);
+    return () => shortcutEvents.removeEventListener(SHORTCUT_NEW_FILE, onNewFile);
+  }, []);
 
   const nodes = buildTree(vfs.listFiles());
 

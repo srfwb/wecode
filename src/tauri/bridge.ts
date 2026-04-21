@@ -39,9 +39,11 @@ export async function attachVfsBridge(vfs: VirtualFS): Promise<() => void> {
 
   const flush = async () => {
     timer = null;
+    const started = performance.now();
     try {
       await syncVfs(vfs.snapshot());
-      bridgeEvents.dispatchEvent(new Event("synced"));
+      const latencyMs = Math.max(0, Math.round(performance.now() - started));
+      bridgeEvents.dispatchEvent(new CustomEvent("synced", { detail: { latencyMs } }));
     } catch (err) {
       console.error("sync_vfs failed", err);
     }

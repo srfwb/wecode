@@ -1,4 +1,6 @@
-export type PreviewDevice = "mobile" | "desktop";
+import type { PreviewDevice } from "../../state/ideStore";
+
+export type { PreviewDevice };
 
 export interface DeviceSize {
   /** CSS width for the preview frame. Null = fill the stage. */
@@ -13,4 +15,4 @@ export const DEVICE_SIZES: Record<PreviewDevice, DeviceSize> = {
   desktop: { width: null, height: null, label: "Bureau" },
 };
 
-export const DEVICE_ORDER: PreviewDevice[] = ["mobile", "desktop"];
+export const DEVICE_ORDER: readonly PreviewDevice[] = ["mobile", "desktop"];

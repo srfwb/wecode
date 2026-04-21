@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
+import { ConfirmDialog } from "../shell/ConfirmDialog";
 import { FileTypeIcon } from "../shell/FileTypeIcon";
+import { toast } from "../shell/toastStore";
 import { ContextMenu, type ContextMenuItem } from "./ContextMenu";
 import { buildTree, type TreeNode } from "./tree";
 
@@ -23,6 +25,7 @@ export function FileTree() {
   const [version, setVersion] = useState(0);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [prompt, setPrompt] = useState<PromptState | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const openFile = useIdeStore((s) => s.openFile);
   const activeFile = useIdeStore((s) => s.activeFile);
 
@@ -52,9 +55,19 @@ export function FileTree() {
         vfs.renameFile(prompt.originalPath, target);
       }
     } catch (err) {
-      window.alert((err as Error).message);
+      toast.error((err as Error).message);
     }
     closePrompt();
+  };
+
+  const confirmDelete = () => {
+    if (!pendingDelete) return;
+    try {
+      vfs.deleteFile(pendingDelete);
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+    setPendingDelete(null);
   };
 
   const onRootContextMenu = (e: React.MouseEvent) => {
@@ -70,15 +83,7 @@ export function FileTree() {
           const base = path.slice(path.lastIndexOf("/") + 1);
           setPrompt({ kind: "rename", parentPath: parent, initial: base, originalPath: path });
         },
-        deletePath: (path) => {
-          if (window.confirm(`Supprimer ${path} ?`)) {
-            try {
-              vfs.deleteFile(path);
-            } catch (err) {
-              window.alert((err as Error).message);
-            }
-          }
-        },
+        deletePath: (path) => setPendingDelete(path),
       })
     : [];
 
@@ -137,6 +142,17 @@ export function FileTree() {
           initial={prompt.initial}
           onSubmit={submitPrompt}
           onCancel={closePrompt}
+        />
+      )}
+
+      {pendingDelete && (
+        <ConfirmDialog
+          title="Supprimer le fichier"
+          message={`Supprimer ${pendingDelete} ? Cette action est irréversible.`}
+          confirmLabel="Supprimer"
+          destructive
+          onConfirm={confirmDelete}
+          onCancel={() => setPendingDelete(null)}
         />
       )}
     </div>

@@ -21,6 +21,7 @@ export function buildTree(paths: string[]): TreeNode[] {
     let cursor = root;
     for (let i = 0; i < segments.length; i++) {
       const seg = segments[i];
+      if (seg === undefined) continue;
       const isLeaf = i === segments.length - 1;
       const segPath = "/" + segments.slice(0, i + 1).join("/");
 

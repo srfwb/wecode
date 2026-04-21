@@ -12,7 +12,7 @@ jobs:
   build:
     name: Build (${{ matrix.platform }})
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.platform }}
@@ -43,7 +43,7 @@ jobs:
 
       - run: npm ci
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v0.5.22
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

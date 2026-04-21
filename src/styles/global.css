@@ -922,6 +922,94 @@ button {
 .modal__actions button[type="submit"]:hover {
   background: oklch(0.85 0.13 75);
 }
+.modal__body {
+  color: var(--fg-1);
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+.modal__btn-destructive {
+  background: var(--err) !important;
+  color: var(--bg-0) !important;
+}
+.modal__btn-destructive:hover {
+  background: oklch(0.78 0.18 25) !important;
+}
+
+/* ============================================================
+   Toasts (bottom-right stack)
+   ============================================================ */
+
+.toasts {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--h-status) + 16px);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  max-width: 420px;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  min-width: 240px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  color: var(--fg-0);
+  font-size: 0.92em;
+  animation: toast-in 0.16s ease-out both;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.toast--info .toast__icon {
+  color: var(--info);
+}
+.toast--success .toast__icon {
+  color: var(--ok);
+}
+.toast--error {
+  border-color: oklch(0.48 0.12 25);
+}
+.toast--error .toast__icon {
+  color: var(--err);
+}
+.toast__icon {
+  flex: none;
+  display: inline-flex;
+}
+.toast__message {
+  flex: 1 1 auto;
+  line-height: 1.4;
+}
+.toast__close {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  color: var(--fg-3);
+  font-size: 14px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+.toast__close:hover {
+  background: var(--bg-3);
+  color: var(--fg-0);
+}
 
 /* ============================================================
    Lesson dock (UI shell — mocked content until the lesson engine lands)

@@ -3,6 +3,7 @@ import { EditorState, type Extension } from "@codemirror/state";
 import { EditorView, keymap, lineNumbers } from "@codemirror/view";
 import { useEffect, useRef } from "react";
 
+import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
 import { languageFor } from "./languages";
 import { editorTheme } from "./theme";
@@ -11,7 +12,18 @@ interface CodeEditorProps {
   path: string | null;
 }
 
-function buildState(path: string, doc: string, onChange: (next: string) => void): EditorState {
+function cursorFromView(view: EditorView): { line: number; col: number } {
+  const pos = view.state.selection.main.head;
+  const line = view.state.doc.lineAt(pos);
+  return { line: line.number, col: pos - line.from + 1 };
+}
+
+function buildState(
+  path: string,
+  doc: string,
+  onDocChange: (next: string) => void,
+  onSelectionChange: (cursor: { line: number; col: number }) => void,
+): EditorState {
   const extensions: Extension[] = [
     lineNumbers(),
     history(),
@@ -21,7 +33,10 @@ function buildState(path: string, doc: string, onChange: (next: string) => void)
     ...languageFor(path),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) {
-        onChange(update.state.doc.toString());
+        onDocChange(update.state.doc.toString());
+      }
+      if (update.selectionSet || update.docChanged) {
+        onSelectionChange(cursorFromView(update.view));
       }
     }),
   ];
@@ -45,6 +60,7 @@ export function CodeEditor({ path }: CodeEditorProps) {
       view.destroy();
       viewRef.current = null;
       stateCache.clear();
+      useIdeStore.getState().setEditorCursor(null);
     };
   }, []);
 
@@ -52,29 +68,37 @@ export function CodeEditor({ path }: CodeEditorProps) {
     const view = viewRef.current;
     if (!view) return;
 
+    const { setEditorCursor } = useIdeStore.getState();
+
     if (path === null) {
       view.setState(EditorState.create({ doc: "" }));
+      setEditorCursor(null);
       return;
     }
 
     const cached = stateCacheRef.current.get(path);
     if (cached) {
       view.setState(cached);
+      setEditorCursor(cursorFromView(view));
       return;
     }
 
     const initialDoc = vfs.readFile(path) ?? "";
-    const state = buildState(path, initialDoc, (next) => {
-      // Write synchronously on every keystroke. The downstream bridge debounces
-      // the VFS-to-Rust sync so the IPC traffic stays bounded; here we want the
-      // VFS state itself to be current immediately so the bridge always
-      // serializes the latest snapshot when its debounce fires.
-      const currentState = viewRef.current?.state;
-      if (currentState) stateCacheRef.current.set(path, currentState);
-      vfs.writeFile(path, next);
-    });
+    const state = buildState(
+      path,
+      initialDoc,
+      (next) => {
+        const currentState = viewRef.current?.state;
+        if (currentState) stateCacheRef.current.set(path, currentState);
+        vfs.writeFile(path, next);
+      },
+      (cursor) => {
+        useIdeStore.getState().setEditorCursor(cursor);
+      },
+    );
     stateCacheRef.current.set(path, state);
     view.setState(state);
+    setEditorCursor(cursorFromView(view));
   }, [path]);
 
   return <div ref={hostRef} className="code-editor" />;

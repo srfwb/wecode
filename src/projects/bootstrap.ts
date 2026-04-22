@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { persistedStore } from "../tauri/persistedStore";
 import { DEFAULT_FILES } from "../vfs/defaults";
 import { openProject } from "./actions";
+import { joinChild } from "./paths";
 import { loadProjectsIndex, saveProjectsIndex } from "./persistence";
 import { useProjectStore } from "./projectStore";
 import type { ProjectMeta } from "./types";
@@ -16,12 +17,6 @@ async function tryLoadLegacyVfsBlob(): Promise<Record<string, string> | null> {
   } catch {
     return null;
   }
-}
-
-function joinChild(parent: string, name: string): string {
-  const useBackslash = parent.includes("\\") && !parent.includes("/");
-  const sep = useBackslash ? "\\" : "/";
-  return parent.endsWith(sep) ? `${parent}${name}` : `${parent}${sep}${name}`;
 }
 
 function countLines(files: Record<string, string>): number {

@@ -4,7 +4,9 @@ import { useIdeStore } from "../state/ideStore";
 import { syncVfs } from "../tauri/bridge";
 import { vfs } from "../vfs/VirtualFS";
 import { getAutoSaveHandle } from "./diskAutoSave";
+import { joinChild, validateProjectName } from "./paths";
 import { useProjectStore } from "./projectStore";
+import { getTemplate, type TemplateId } from "./templates";
 import type { ListedFile, ProjectMeta } from "./types";
 
 export async function loadProjectFilesFromDisk(meta: ProjectMeta): Promise<Record<string, string>> {
@@ -19,6 +21,53 @@ export async function loadProjectFilesFromDisk(meta: ProjectMeta): Promise<Recor
     files[entry.relPath] = content;
   }
   return files;
+}
+
+export async function createProject(input: {
+  name: string;
+  templateId: TemplateId;
+  parentDir?: string;
+}): Promise<string> {
+  const nameError = validateProjectName(input.name);
+  if (nameError) throw new Error(nameError);
+  const name = input.name.trim();
+
+  const parentDir = input.parentDir ?? (await invoke<string>("fs_default_projects_root"));
+  await invoke("fs_ensure_dir", { dirPath: parentDir });
+
+  const projectPath = joinChild(parentDir, name);
+  const exists = await invoke<boolean>("fs_path_exists", { path: projectPath });
+  if (exists) {
+    throw new Error(`Un dossier existe déjà à ${projectPath}.`);
+  }
+  await invoke("fs_ensure_dir", { dirPath: projectPath });
+
+  const template = getTemplate(input.templateId);
+  for (const [relPath, content] of Object.entries(template.files)) {
+    await invoke("fs_write_file", { projectPath, relPath, content });
+  }
+
+  const id = crypto.randomUUID();
+  const now = Date.now();
+  const fileCount = Object.keys(template.files).length;
+  const lineCount = Object.values(template.files).reduce(
+    (acc, c) => acc + (c.match(/\n/g)?.length ?? 0),
+    0,
+  );
+  const meta: ProjectMeta = {
+    id,
+    name,
+    path: projectPath,
+    kind: template.kind,
+    tags: template.tags,
+    createdAt: now,
+    lastOpenedAt: now,
+    fileCount,
+    lineCount,
+  };
+  useProjectStore.getState().upsert(meta);
+  await openProject(id);
+  return id;
 }
 
 export async function openProject(id: string): Promise<void> {

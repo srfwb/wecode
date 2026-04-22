@@ -9,6 +9,7 @@ import {
   setAutoSaveHandle,
 } from "./projects/diskAutoSave";
 import { attachProjectsIndexAutoSave } from "./projects/persistence";
+import { attachWatcherBridge } from "./projects/watcherBridge";
 import { attachIdeAutoSave, loadIdeState } from "./state/persistence";
 import { bootstrapIdeStore } from "./state/ideStore";
 import { attachVfsBridge } from "./tauri/bridge";
@@ -25,6 +26,7 @@ async function bootstrap() {
   });
 
   disposers.push(attachProjectsIndexAutoSave());
+  disposers.push(await attachWatcherBridge(vfs));
 
   await bootstrapProjects();
 

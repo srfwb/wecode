@@ -1,4 +1,5 @@
 import { persistedStore } from "../tauri/persistedStore";
+import type { View } from "./ideStore";
 import { useIdeStore } from "./ideStore";
 
 const STORE_KEY = "tabs.v1";
@@ -8,6 +9,7 @@ interface PersistedTabs {
   openFiles: string[];
   activeFile: string | null;
   dockCollapsed?: boolean;
+  view?: View;
 }
 
 const getStore = persistedStore("wecode.ide.json");
@@ -25,12 +27,13 @@ export function attachIdeAutoSave(): () => void {
 
   const flush = async () => {
     timer = null;
-    const { openFiles, activeFile, dockCollapsed } = useIdeStore.getState();
+    const { openFiles, activeFile, dockCollapsed, view } = useIdeStore.getState();
     const store = await getStore();
     await store.set(STORE_KEY, {
       openFiles,
       activeFile,
       dockCollapsed,
+      view,
     } satisfies PersistedTabs);
     await store.save();
   };
@@ -39,7 +42,8 @@ export function attachIdeAutoSave(): () => void {
     if (
       state.openFiles === prev.openFiles &&
       state.activeFile === prev.activeFile &&
-      state.dockCollapsed === prev.dockCollapsed
+      state.dockCollapsed === prev.dockCollapsed &&
+      state.view === prev.view
     ) {
       return;
     }

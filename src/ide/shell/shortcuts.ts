@@ -20,6 +20,7 @@ function cycleTab(step: 1 | -1): void {
 export function useGlobalShortcuts(): void {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (useIdeStore.getState().view !== "ide") return;
       const mod = e.ctrlKey || e.metaKey;
       if (!mod) return;
 

@@ -1,3 +1,4 @@
+import { ProjectModalsHost } from "../projects/ui/ProjectModalsHost";
 import { HomeRail } from "./rail/HomeRail";
 import { BottomTip } from "./sections/BottomTip";
 import { ContinueSection } from "./sections/ContinueSection";
@@ -18,6 +19,7 @@ export function HomeShell() {
         <TemplatesSection />
         <BottomTip />
       </main>
+      <ProjectModalsHost />
     </div>
   );
 }

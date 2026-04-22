@@ -1,10 +1,18 @@
+import { useIdeStore } from "../../state/ideStore";
+
 export function Toolbar() {
+  const setView = useIdeStore((s) => s.setView);
   return (
     <header className="toolbar" role="banner">
-      <div className="brand">
+      <button
+        type="button"
+        className="brand brand--link"
+        onClick={() => setView("home")}
+        aria-label="Retour à l'accueil"
+      >
         <div className="brand-mark" aria-hidden="true" />
         <span>WeCode</span>
-      </div>
+      </button>
 
       <div className="toolbar-center">
         <div className="cmd-search" role="search" aria-label="Rechercher">

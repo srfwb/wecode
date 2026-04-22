@@ -1,21 +1,16 @@
-import { IDELayout } from "./ide/layout/IDELayout";
-import { useGlobalShortcuts } from "./ide/shell/shortcuts";
-import { StatusBar } from "./ide/shell/StatusBar";
+import { HomeShell } from "./home/HomeShell";
+import { IdeShell } from "./ide/shell/IdeShell";
 import { Toasts } from "./ide/shell/Toasts";
-import { Toolbar } from "./ide/shell/Toolbar";
+import { useIdeStore } from "./state/ideStore";
 import "./styles/global.css";
 
 function App() {
-  useGlobalShortcuts();
+  const view = useIdeStore((s) => s.view);
   return (
-    <div className="shell">
-      <Toolbar />
-      <div className="body">
-        <IDELayout />
-      </div>
-      <StatusBar />
+    <>
+      {view === "home" ? <HomeShell /> : <IdeShell />}
       <Toasts />
-    </div>
+    </>
   );
 }
 

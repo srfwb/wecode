@@ -2,9 +2,11 @@ mod commands;
 mod fs_commands;
 mod protocol;
 mod vfs_state;
+mod watcher;
 
 use fs_commands::RecentWritesState;
 use vfs_state::VfsState;
+use watcher::WatcherState;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -14,6 +16,7 @@ pub fn run() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .manage(VfsState::default())
         .manage(RecentWritesState::default())
+        .manage(WatcherState::default())
         .register_uri_scheme_protocol("wecode", protocol::handle)
         .invoke_handler(tauri::generate_handler![
             commands::sync_vfs,
@@ -25,6 +28,8 @@ pub fn run() {
             fs_commands::fs_create_file,
             fs_commands::fs_delete_file,
             fs_commands::fs_rename_file,
+            watcher::watcher_start,
+            watcher::watcher_stop,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

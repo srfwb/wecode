@@ -22,7 +22,6 @@ impl RecentWritesState {
         guard.insert(key, now_ms());
     }
 
-    #[allow(dead_code)] // wired up by the watcher module in a following commit
     pub fn was_recent(&self, absolute_path: &Path, within_ms: u128) -> bool {
         let Ok(guard) = self.0.lock() else {
             return false;

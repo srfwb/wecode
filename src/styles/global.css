@@ -1712,6 +1712,16 @@ button.brand {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
+@keyframes proj-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 .home-proj {
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr) auto;
@@ -1726,6 +1736,8 @@ button.brand {
   text-align: left;
   cursor: pointer;
   position: relative;
+  animation: proj-in 220ms ease-out both;
+  animation-delay: min(calc(var(--proj-idx, 0) * 40ms), 240ms);
   transition:
     background 0.12s,
     border-color 0.12s,

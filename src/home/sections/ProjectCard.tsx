@@ -9,9 +9,10 @@ import { useProjectModalStore } from "../../projects/ui/modalStore";
 
 interface Props {
   project: ProjectMeta;
+  index?: number;
 }
 
-export function ProjectCard({ project }: Props) {
+export function ProjectCard({ project, index = 0 }: Props) {
   const openRename = useProjectModalStore((s) => s.openRename);
   const openDelete = useProjectModalStore((s) => s.openDelete);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
@@ -26,6 +27,7 @@ export function ProjectCard({ project }: Props) {
       <button
         type="button"
         className="home-proj"
+        style={{ "--proj-idx": index } as React.CSSProperties}
         onClick={() => void openProject(project.id)}
         onContextMenu={onContext}
         aria-label={`Ouvrir ${project.name}`}

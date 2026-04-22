@@ -15,8 +15,8 @@ export function RecentProjectsSection() {
       </div>
       {projects.length > 0 ? (
         <div className="home-proj-grid">
-          {projects.map((p) => (
-            <ProjectCard key={p.id} project={p} />
+          {projects.map((p, i) => (
+            <ProjectCard key={p.id} project={p} index={i} />
           ))}
         </div>
       ) : (

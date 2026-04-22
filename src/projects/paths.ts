@@ -11,7 +11,7 @@ export function validateProjectName(raw: string): string {
   if (!name) return "Le nom ne peut pas être vide.";
   if (name.length > 80) return "Le nom est trop long (max 80 caractères).";
   if (FORBIDDEN_CHARS.test(name)) {
-    return "Le nom ne peut pas contenir : \\ / : * ? \" < > |";
+    return 'Le nom ne peut pas contenir : \\ / : * ? " < > |';
   }
   if (name === "." || name === "..") return "Nom invalide.";
   return "";

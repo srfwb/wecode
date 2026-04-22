@@ -80,10 +80,7 @@ export async function createProject(input: {
   return id;
 }
 
-export async function deleteProject(
-  id: string,
-  opts: { removeFromDisk: boolean },
-): Promise<void> {
+export async function deleteProject(id: string, opts: { removeFromDisk: boolean }): Promise<void> {
   const state = useProjectStore.getState();
   const project = state.projects.find((p) => p.id === id);
   if (!project) throw new Error(`unknown project: ${id}`);

@@ -80,6 +80,54 @@ export async function createProject(input: {
   return id;
 }
 
+export async function deleteProject(
+  id: string,
+  opts: { removeFromDisk: boolean },
+): Promise<void> {
+  const state = useProjectStore.getState();
+  const project = state.projects.find((p) => p.id === id);
+  if (!project) throw new Error(`unknown project: ${id}`);
+  const isActive = state.activeProjectId === id;
+
+  if (isActive) {
+    const autosave = getAutoSaveHandle();
+    if (autosave) await autosave.flush();
+    try {
+      await invoke("watcher_stop");
+    } catch (err) {
+      console.warn("watcher_stop failed (ignored)", err);
+    }
+    vfs.hydrate({});
+    if (autosave) autosave.markBaseline({});
+    try {
+      await syncVfs({});
+    } catch (err) {
+      console.warn("syncVfs after delete failed (ignored)", err);
+    }
+  }
+
+  if (opts.removeFromDisk) {
+    await invoke("fs_delete_dir", { dirPath: project.path });
+  }
+
+  const remaining = state.projects.filter((p) => p.id !== id);
+  const nextActive =
+    isActive && remaining.length > 0
+      ? ([...remaining].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)[0]?.id ?? null)
+      : isActive
+        ? null
+        : state.activeProjectId;
+  useProjectStore.setState({ projects: remaining, activeProjectId: nextActive });
+
+  if (isActive) {
+    if (nextActive) {
+      await openProject(nextActive);
+    } else {
+      useIdeStore.getState().setView("home");
+    }
+  }
+}
+
 export async function openProject(id: string): Promise<void> {
   const autosave = getAutoSaveHandle();
   if (autosave) await autosave.flush();

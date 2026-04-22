@@ -1,5 +1,5 @@
-import { IconSparkle } from "../icons";
-import { EmptyState } from "./EmptyState";
+import { TEMPLATES } from "../../projects/templates";
+import { TemplateCard } from "./TemplateCard";
 
 export function TemplatesSection() {
   return (
@@ -7,11 +7,11 @@ export function TemplatesSection() {
       <div className="home-sec-head">
         <h3>Commence un nouveau projet</h3>
       </div>
-      <EmptyState
-        icon={<IconSparkle />}
-        title="Modèles bientôt disponibles"
-        subtitle="Tu pourras partir d'un dossier vierge ou d'un squelette préconfiguré."
-      />
+      <div className="home-tpl-grid">
+        {TEMPLATES.map((t) => (
+          <TemplateCard key={t.id} template={t} />
+        ))}
+      </div>
     </section>
   );
 }

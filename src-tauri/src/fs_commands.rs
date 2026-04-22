@@ -221,6 +221,29 @@ pub fn fs_delete_file(
 }
 
 #[tauri::command]
+pub fn fs_path_exists(path: String) -> Result<bool, String> {
+    Ok(Path::new(&path).exists())
+}
+
+#[tauri::command]
+pub fn fs_delete_dir(dir_path: String) -> Result<(), String> {
+    let path = Path::new(&dir_path);
+    if !path.is_absolute() {
+        return Err("path must be absolute".into());
+    }
+    if path.components().count() < 4 {
+        return Err("refusing to delete shallow path".into());
+    }
+    if !path.exists() {
+        return Err("path does not exist".into());
+    }
+    if !path.is_dir() {
+        return Err("path is not a directory".into());
+    }
+    fs::remove_dir_all(path).map_err(|e| format!("remove_dir_all failed: {e}"))
+}
+
+#[tauri::command]
 pub fn fs_rename_file(
     project_path: String,
     from_rel: String,

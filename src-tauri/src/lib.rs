@@ -14,6 +14,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_window_state::Builder::default().build())
+        .plugin(tauri_plugin_dialog::init())
         .manage(VfsState::default())
         .manage(RecentWritesState::default())
         .manage(WatcherState::default())
@@ -28,6 +29,8 @@ pub fn run() {
             fs_commands::fs_create_file,
             fs_commands::fs_delete_file,
             fs_commands::fs_rename_file,
+            fs_commands::fs_path_exists,
+            fs_commands::fs_delete_dir,
             watcher::watcher_start,
             watcher::watcher_stop,
         ])

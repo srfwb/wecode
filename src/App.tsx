@@ -8,7 +8,7 @@ function App() {
   const view = useIdeStore((s) => s.view);
   return (
     <>
-      {view === "home" ? <HomeShell /> : <IdeShell />}
+      {view === "home" ? <HomeShell key="home" /> : <IdeShell key="ide" />}
       <Toasts />
     </>
   );

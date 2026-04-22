@@ -2,16 +2,30 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import App from "./App";
+import { bootstrapProjects } from "./projects/bootstrap";
+import { attachDiskAutoSave, getAutoSaveHandle, setAutoSaveHandle } from "./projects/diskAutoSave";
+import { attachProjectsIndexAutoSave } from "./projects/persistence";
+import { attachWatcherBridge } from "./projects/watcherBridge";
 import { attachIdeAutoSave, loadIdeState } from "./state/persistence";
 import { bootstrapIdeStore } from "./state/ideStore";
 import { attachVfsBridge } from "./tauri/bridge";
-import { attachAutoSave, loadIntoVfs } from "./vfs/persistence";
 import { vfs } from "./vfs/VirtualFS";
 
 async function bootstrap() {
-  await loadIntoVfs(vfs);
   const disposers: Array<() => void> = [];
-  disposers.push(attachAutoSave(vfs));
+
+  const autoSave = attachDiskAutoSave(vfs);
+  setAutoSaveHandle(autoSave);
+  disposers.push(() => {
+    getAutoSaveHandle()?.dispose();
+    setAutoSaveHandle(null);
+  });
+
+  disposers.push(attachProjectsIndexAutoSave());
+  disposers.push(await attachWatcherBridge(vfs));
+
+  await bootstrapProjects();
+
   disposers.push(bootstrapIdeStore());
   await loadIdeState();
   disposers.push(attachIdeAutoSave());

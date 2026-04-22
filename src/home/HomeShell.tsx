@@ -1,4 +1,5 @@
 import { HomeRail } from "./rail/HomeRail";
+import { BottomTip } from "./sections/BottomTip";
 import { ContinueSection } from "./sections/ContinueSection";
 import { HomeSearch } from "./sections/HomeSearch";
 import { LessonPathSection } from "./sections/LessonPathSection";
@@ -15,6 +16,7 @@ export function HomeShell() {
         <RecentProjectsSection />
         <LessonPathSection />
         <TemplatesSection />
+        <BottomTip />
       </main>
     </div>
   );

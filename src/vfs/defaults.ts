@@ -1,16 +1,16 @@
 export const DEFAULT_FILES: Record<string, string> = {
   "/index.html": `<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>WeCode</title>
+    <title>First steps</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <h1>Bienvenue dans WeCode</h1>
+    <h1>Welcome to WeCode</h1>
     <p>
-      Modifie <code>index.html</code> et <code>style.css</code>, puis regarde le
-      preview se mettre à jour.
+      Edit <code>index.html</code> and <code>style.css</code>, then watch the
+      preview update live.
     </p>
   </body>
 </html>

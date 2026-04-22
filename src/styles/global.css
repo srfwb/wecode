@@ -1599,9 +1599,7 @@ button.brand {
   gap: 24px;
   align-items: center;
   padding: 20px 22px;
-  background:
-    linear-gradient(135deg, oklch(0.8 0.13 75 / 0.1), transparent 60%),
-    var(--bg-1);
+  background: linear-gradient(135deg, oklch(0.8 0.13 75 / 0.1), transparent 60%), var(--bg-1);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   position: relative;

@@ -7,9 +7,7 @@ import { getAutoSaveHandle } from "./diskAutoSave";
 import { useProjectStore } from "./projectStore";
 import type { ListedFile, ProjectMeta } from "./types";
 
-export async function loadProjectFilesFromDisk(
-  meta: ProjectMeta,
-): Promise<Record<string, string>> {
+export async function loadProjectFilesFromDisk(meta: ProjectMeta): Promise<Record<string, string>> {
   const listed = await invoke<ListedFile[]>("fs_list_project", { projectPath: meta.path });
   const files: Record<string, string> = {};
   for (const entry of listed) {

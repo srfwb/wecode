@@ -3,11 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import App from "./App";
 import { bootstrapProjects } from "./projects/bootstrap";
-import {
-  attachDiskAutoSave,
-  getAutoSaveHandle,
-  setAutoSaveHandle,
-} from "./projects/diskAutoSave";
+import { attachDiskAutoSave, getAutoSaveHandle, setAutoSaveHandle } from "./projects/diskAutoSave";
 import { attachProjectsIndexAutoSave } from "./projects/persistence";
 import { attachWatcherBridge } from "./projects/watcherBridge";
 import { attachIdeAutoSave, loadIdeState } from "./state/persistence";

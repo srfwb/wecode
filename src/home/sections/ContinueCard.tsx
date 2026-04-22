@@ -20,8 +20,8 @@ export function ContinueCard({ project }: Props) {
         <h2 className="home-continue-title">{project.name}</h2>
         <p className="home-continue-sub">
           <span className="home-continue-meta">
-            {project.fileCount} fichier{project.fileCount > 1 ? "s" : ""} ·{" "}
-            {project.lineCount} ligne{project.lineCount > 1 ? "s" : ""}
+            {project.fileCount} fichier{project.fileCount > 1 ? "s" : ""} · {project.lineCount}{" "}
+            ligne{project.lineCount > 1 ? "s" : ""}
           </span>
           <span className="home-continue-meta">
             modifié {formatRelativeTime(project.lastOpenedAt)}

@@ -23,6 +23,16 @@ export async function loadProjectFilesFromDisk(meta: ProjectMeta): Promise<Recor
   return files;
 }
 
+export function renameProject(id: string, newName: string): void {
+  const error = validateProjectName(newName);
+  if (error) throw new Error(error);
+  const name = newName.trim();
+  const project = useProjectStore.getState().projects.find((p) => p.id === id);
+  if (!project) throw new Error(`unknown project: ${id}`);
+  if (project.name === name) return;
+  useProjectStore.getState().upsert({ ...project, name });
+}
+
 export async function createProject(input: {
   name: string;
   templateId: TemplateId;

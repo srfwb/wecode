@@ -44,4 +44,22 @@ describe("validateProjectName", () => {
   it("rejects names longer than 80 characters", () => {
     expect(validateProjectName("x".repeat(81))).toMatch(/trop long/);
   });
+
+  it("rejects windows reserved device names", () => {
+    expect(validateProjectName("CON")).toMatch(/réservé/);
+    expect(validateProjectName("prn")).toMatch(/réservé/);
+    expect(validateProjectName("NUL")).toMatch(/réservé/);
+    expect(validateProjectName("COM1")).toMatch(/réservé/);
+    expect(validateProjectName("LPT9")).toMatch(/réservé/);
+  });
+
+  it("rejects windows reserved names even with an extension", () => {
+    // CON.txt is as broken as CON on Windows.
+    expect(validateProjectName("CON.txt")).toMatch(/réservé/);
+  });
+
+  it("allows names that merely contain a reserved substring", () => {
+    expect(validateProjectName("console")).toBe("");
+    expect(validateProjectName("auxiliary-notes")).toBe("");
+  });
 });

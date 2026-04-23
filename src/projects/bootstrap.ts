@@ -28,14 +28,24 @@ export async function bootstrapProjects(): Promise<void> {
   await invoke("fs_ensure_dir", { dirPath: rootPath });
 
   const existing = await loadProjectsIndex();
-  if (existing && existing.projects.length > 0) {
+
+  // If the projects index has been written at least once, trust it —
+  // even if it is currently empty (the user deleted their only project).
+  // Re-seeding would silently overwrite/ignore user history; leaving the
+  // list blank is the correct behavior and lets them create a new project
+  // from the Home view.
+  if (existing !== null) {
     useProjectStore.getState().hydrate(existing);
-    const activeId = existing.activeProjectId ?? existing.projects[0]!.id;
-    await openProject(activeId);
+    const activeId = existing.activeProjectId ?? existing.projects[0]?.id ?? null;
+    if (activeId && existing.projects.some((p) => p.id === activeId)) {
+      await openProject(activeId);
+    }
     return;
   }
 
-  // First seed / migration.
+  // No index on disk — first launch (or upgrade from v0.1.0, which only
+  // wrote `wecode.store.json`). Seed from the legacy VFS blob if present,
+  // otherwise fall back to the built-in template.
   const firstStepsPath = joinChild(rootPath, "First steps");
   await invoke("fs_ensure_dir", { dirPath: firstStepsPath });
 

@@ -28,4 +28,8 @@ export interface ListedFile {
 export interface ProjectFileChanged {
   relPath: string;
   exists: boolean;
+  // Project id captured at the Rust-side `watcher_start` call. The frontend
+  // uses this to ignore late events from a watcher for a project that is no
+  // longer active.
+  projectId: string;
 }

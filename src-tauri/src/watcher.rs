@@ -20,11 +20,17 @@ struct FileChangedPayload {
     #[serde(rename = "relPath")]
     rel_path: String,
     exists: bool,
+    // Project id captured at watcher_start time. The frontend filters events
+    // against the currently active project so a late event from a previous
+    // watcher doesn't get applied to a different project's VFS.
+    #[serde(rename = "projectId")]
+    project_id: String,
 }
 
 #[tauri::command]
 pub fn watcher_start(
     project_path: String,
+    project_id: String,
     app: AppHandle,
     state: State<'_, WatcherState>,
 ) -> Result<(), String> {
@@ -39,6 +45,7 @@ pub fn watcher_start(
 
     let app_for_handler = app.clone();
     let root_for_handler = canonical_root.clone();
+    let project_id_for_handler = project_id.clone();
 
     let mut debouncer = new_debouncer(
         Duration::from_millis(DEBOUNCE_MS),
@@ -62,7 +69,11 @@ pub fn watcher_start(
                     continue;
                 };
                 let exists = ev.path.exists();
-                let payload = FileChangedPayload { rel_path, exists };
+                let payload = FileChangedPayload {
+                    rel_path,
+                    exists,
+                    project_id: project_id_for_handler.clone(),
+                };
                 if let Err(err) = app_for_handler.emit("project-file-changed", payload) {
                     eprintln!("failed to emit project-file-changed: {err}");
                 }

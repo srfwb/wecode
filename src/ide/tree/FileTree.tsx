@@ -32,7 +32,15 @@ export function FileTree() {
   const openFile = useIdeStore((s) => s.openFile);
   const activeFile = useIdeStore((s) => s.activeFile);
 
-  useEffect(() => vfs.on("change", () => setVersion((v) => v + 1)), []);
+  // Only restructure the tree when file *set* changes. Ignore plain writes —
+  // those fire on every keystroke in the editor and would force rebuildTree
+  // / collectVisibleFiles to re-run for nothing.
+  useEffect(() => {
+    return vfs.on("change", (event) => {
+      if (event.kind === "write") return;
+      setVersion((v) => v + 1);
+    });
+  }, []);
 
   useEffect(() => {
     const onNewFile = () => setPrompt({ kind: "create", parentPath: "/", initial: "" });

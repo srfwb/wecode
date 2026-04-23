@@ -34,16 +34,24 @@ export async function syncVfs(snapshot: VfsSnapshot): Promise<void> {
 // pulling in a state library for what is essentially a singleton signal.
 export const bridgeEvents = new EventTarget();
 
+// Sync the snapshot and announce it — any call path that changes which files
+// back the preview (project switch, delete active project, bootstrap) must go
+// through here instead of calling `syncVfs` directly, so the iframe gets a
+// reload signal.
+export async function syncVfsNow(snapshot: VfsSnapshot): Promise<void> {
+  const started = performance.now();
+  await syncVfs(snapshot);
+  const latencyMs = Math.max(0, Math.round(performance.now() - started));
+  bridgeEvents.dispatchEvent(new CustomEvent("synced", { detail: { latencyMs } }));
+}
+
 export async function attachVfsBridge(vfs: VirtualFS): Promise<() => void> {
   let timer: ReturnType<typeof setTimeout> | null = null;
 
   const flush = async () => {
     timer = null;
-    const started = performance.now();
     try {
-      await syncVfs(vfs.snapshot());
-      const latencyMs = Math.max(0, Math.round(performance.now() - started));
-      bridgeEvents.dispatchEvent(new CustomEvent("synced", { detail: { latencyMs } }));
+      await syncVfsNow(vfs.snapshot());
     } catch (err) {
       console.error("sync_vfs failed", err);
     }
@@ -53,10 +61,18 @@ export async function attachVfsBridge(vfs: VirtualFS): Promise<() => void> {
   // before the first render.
   await flush();
 
-  return vfs.on("change", () => {
+  const off = vfs.on("change", () => {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       void flush();
     }, SYNC_DEBOUNCE_MS);
   });
+
+  return () => {
+    off();
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  };
 }

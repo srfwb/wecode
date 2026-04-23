@@ -185,7 +185,7 @@ async function openProjectImpl(id: string): Promise<void> {
   await syncVfsNow(vfs.snapshot());
 
   try {
-    await invoke("watcher_start", { projectPath: meta.path });
+    await invoke("watcher_start", { projectPath: meta.path, projectId: id });
   } catch (err) {
     console.warn("watcher_start failed (external changes will not be picked up)", err);
   }

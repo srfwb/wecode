@@ -5,10 +5,12 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0-rc.1] — 2026-04-23
+## [0.2.0-1] — 2026-04-23
 
 Pre-release. First version to ship the Welcome page and the on-disk project
-model. Expect breaking changes before 0.2.0 final.
+model. Expect breaking changes before 0.2.0 final. The numeric pre-release
+identifier (`-1` rather than `-rc.1`) is required by the Windows MSI bundler,
+which rejects non-numeric pre-release tags.
 
 ### Added
 

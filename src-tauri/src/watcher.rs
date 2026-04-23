@@ -82,9 +82,16 @@ pub fn watcher_start(
 }
 
 #[tauri::command]
-pub fn watcher_stop(state: State<'_, WatcherState>) -> Result<(), String> {
+pub fn watcher_stop(
+    state: State<'_, WatcherState>,
+    recent_writes: State<'_, RecentWritesState>,
+) -> Result<(), String> {
     let mut guard = state.0.lock().map_err(|e| e.to_string())?;
     *guard = None;
+    // Drop self-echo tracking state when no project is actively watched so it
+    // does not leak across project switches or linger after the user closes
+    // the active workspace.
+    recent_writes.clear();
     Ok(())
 }
 

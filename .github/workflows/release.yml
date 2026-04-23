@@ -59,4 +59,4 @@ jobs:
 
             > Code signing is not configured yet, so the OS may show a security warning on first launch.
           releaseDraft: true
-          prerelease: false
+          prerelease: ${{ contains(github.ref_name, '-') }}

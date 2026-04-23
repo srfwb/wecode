@@ -12,7 +12,7 @@ export function HomeGreeting() {
     <div className="home-greet">
       <div className="home-greet-date">{dateLabel}</div>
       <h1 className="home-greet-title">
-        Bienvenue dans <em>WeCode</em>.
+        Bienvenue dans <span className="home-greet-accent">WeCode</span>.
       </h1>
     </div>
   );

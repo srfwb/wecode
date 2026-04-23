@@ -26,16 +26,14 @@ impl RecentWritesState {
         let now = now_ms();
         let cutoff = now.saturating_sub(RECENT_WRITE_KEEP_MS);
         guard.retain(|_, ts| *ts >= cutoff);
-        let key = absolute_path.to_string_lossy().to_string();
-        guard.insert(key, now);
+        guard.insert(canonical_key(absolute_path), now);
     }
 
     pub fn was_recent(&self, absolute_path: &Path, within_ms: u128) -> bool {
         let Ok(guard) = self.0.lock() else {
             return false;
         };
-        let key = absolute_path.to_string_lossy().to_string();
-        match guard.get(&key) {
+        match guard.get(&canonical_key(absolute_path)) {
             Some(stamp) => now_ms().saturating_sub(*stamp) <= within_ms,
             None => false,
         }
@@ -47,6 +45,20 @@ impl RecentWritesState {
         };
         guard.clear();
     }
+}
+
+// Normalise path strings so that `record` and `was_recent` (and the watcher's
+// event path) end up with byte-identical keys. On Windows, `canonicalize`
+// prepends the `\\?\` verbatim prefix; without going through it, a path
+// produced by `PathBuf::from("C:\\…")` never matches the canonical form emitted
+// by notify-debouncer-mini. If canonicalize fails (e.g., the file was just
+// deleted) we fall back to the raw path — both sides will fall back the same
+// way, so lookups still agree.
+fn canonical_key(path: &Path) -> String {
+    std::fs::canonicalize(path)
+        .unwrap_or_else(|_| path.to_path_buf())
+        .to_string_lossy()
+        .to_string()
 }
 
 fn now_ms() -> u128 {
@@ -389,6 +401,25 @@ mod tests {
         let path = std::env::temp_dir().join("wecode-recent-writes-test.txt");
         state.record(&path);
         assert!(state.was_recent(&path, 500));
+    }
+
+    #[test]
+    fn recent_writes_matches_across_canonicalization_forms() {
+        // `record` and `was_recent` must agree even when callers pass the same
+        // logical file via different syntactic path forms (a redundant `.`
+        // segment here, but on Windows this stands in for the `\\?\` UNC
+        // prefix that `canonicalize` prepends). Without normalising the key,
+        // watcher events would never match self-writes on Windows.
+        let tempdir = fresh_tempdir("recent-canon");
+        let file = tempdir.join("echo.txt");
+        fs::write(&file, b"hi").expect("seed file");
+
+        let state = RecentWritesState::default();
+        let with_dot = tempdir.join(".").join("echo.txt");
+        state.record(&with_dot);
+        assert!(state.was_recent(&file, 500));
+
+        let _ = fs::remove_dir_all(&tempdir);
     }
 
     #[test]

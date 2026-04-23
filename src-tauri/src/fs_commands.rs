@@ -10,6 +10,11 @@ use tauri::State;
 const MAX_TEXT_FILE_BYTES: u64 = 1_048_576;
 const SKIP_DIR_NAMES: &[&str] = &["node_modules", ".git", ".DS_Store"];
 
+// Bound the RecentWrites map: entries older than this are dropped on record().
+// Must be comfortably larger than the watcher echo grace window (500 ms) so
+// legitimate self-echos are still detected.
+const RECENT_WRITE_KEEP_MS: u128 = 2_000;
+
 #[derive(Default)]
 pub struct RecentWritesState(pub Mutex<HashMap<String, u128>>);
 
@@ -18,8 +23,11 @@ impl RecentWritesState {
         let Ok(mut guard) = self.0.lock() else {
             return;
         };
+        let now = now_ms();
+        let cutoff = now.saturating_sub(RECENT_WRITE_KEEP_MS);
+        guard.retain(|_, ts| *ts >= cutoff);
         let key = absolute_path.to_string_lossy().to_string();
-        guard.insert(key, now_ms());
+        guard.insert(key, now);
     }
 
     pub fn was_recent(&self, absolute_path: &Path, within_ms: u128) -> bool {
@@ -31,6 +39,13 @@ impl RecentWritesState {
             Some(stamp) => now_ms().saturating_sub(*stamp) <= within_ms,
             None => false,
         }
+    }
+
+    pub fn clear(&self) {
+        let Ok(mut guard) = self.0.lock() else {
+            return;
+        };
+        guard.clear();
     }
 }
 
@@ -92,10 +107,23 @@ fn resolve_inside(project_path: &str, rel_path: &str) -> Result<(PathBuf, PathBu
     Ok((root, joined))
 }
 
+fn default_projects_root_raw() -> Result<PathBuf, String> {
+    let docs = dirs::document_dir().ok_or("could not resolve Documents directory")?;
+    Ok(docs.join("WeCode"))
+}
+
+// Canonicalized WeCode root, creating it on the fly if absent so canonicalize
+// succeeds. Used as the anchor for destructive path checks.
+fn wecode_root_canonical() -> Result<PathBuf, String> {
+    let root = default_projects_root_raw()?;
+    fs::create_dir_all(&root).map_err(|e| format!("ensure WeCode root failed: {e}"))?;
+    root.canonicalize()
+        .map_err(|e| format!("canonicalize WeCode root failed: {e}"))
+}
+
 #[tauri::command]
 pub fn fs_default_projects_root() -> Result<String, String> {
-    let docs = dirs::document_dir().ok_or("could not resolve Documents directory")?;
-    Ok(docs.join("WeCode").to_string_lossy().to_string())
+    Ok(default_projects_root_raw()?.to_string_lossy().to_string())
 }
 
 #[tauri::command]
@@ -177,10 +205,9 @@ pub fn fs_write_file(
     content: String,
     recent_writes: State<'_, RecentWritesState>,
 ) -> Result<(), String> {
-    let root = PathBuf::from(&project_path);
-    fs::create_dir_all(&root).map_err(|e| format!("ensure root failed: {e}"))?;
-    let rel = validate_rel(&rel_path)?;
-    let abs = root.join(&rel);
+    // Ensure root exists so resolve_inside's canonicalize call succeeds.
+    fs::create_dir_all(&project_path).map_err(|e| format!("ensure root failed: {e}"))?;
+    let (_, abs) = resolve_inside(&project_path, &rel_path)?;
     if let Some(parent) = abs.parent() {
         fs::create_dir_all(parent).map_err(|e| format!("ensure parent failed: {e}"))?;
     }
@@ -225,22 +252,34 @@ pub fn fs_path_exists(path: String) -> Result<bool, String> {
     Ok(Path::new(&path).exists())
 }
 
-#[tauri::command]
-pub fn fs_delete_dir(dir_path: String) -> Result<(), String> {
-    let path = Path::new(&dir_path);
-    if !path.is_absolute() {
+// Extracted for unit testing with a temp anchor root.
+fn delete_dir_under_anchor(anchor_root: &Path, target: &Path) -> Result<(), String> {
+    if !target.is_absolute() {
         return Err("path must be absolute".into());
     }
-    if path.components().count() < 4 {
-        return Err("refusing to delete shallow path".into());
+    if !target.exists() {
+        // Idempotent no-op: the folder is already gone (e.g., removed out-of-band).
+        return Ok(());
     }
-    if !path.exists() {
-        return Err("path does not exist".into());
-    }
-    if !path.is_dir() {
+    if !target.is_dir() {
         return Err("path is not a directory".into());
     }
-    fs::remove_dir_all(path).map_err(|e| format!("remove_dir_all failed: {e}"))
+    let canonical = target
+        .canonicalize()
+        .map_err(|e| format!("canonicalize failed: {e}"))?;
+    if canonical == anchor_root {
+        return Err("refusing to delete WeCode root itself".into());
+    }
+    if !canonical.starts_with(anchor_root) {
+        return Err("refusing to delete path outside WeCode root".into());
+    }
+    fs::remove_dir_all(&canonical).map_err(|e| format!("remove_dir_all failed: {e}"))
+}
+
+#[tauri::command]
+pub fn fs_delete_dir(dir_path: String) -> Result<(), String> {
+    let root = wecode_root_canonical()?;
+    delete_dir_under_anchor(&root, Path::new(&dir_path))
 }
 
 #[tauri::command]
@@ -252,6 +291,13 @@ pub fn fs_rename_file(
 ) -> Result<(), String> {
     let (_, from_abs) = resolve_inside(&project_path, &from_rel)?;
     let (_, to_abs) = resolve_inside(&project_path, &to_rel)?;
+    if !from_abs.exists() {
+        return Err("source not found".into());
+    }
+    let metadata = fs::metadata(&from_abs).map_err(|e| format!("metadata failed: {e}"))?;
+    if metadata.is_dir() {
+        return Err("refusing to rename directory".into());
+    }
     if to_abs.exists() {
         return Err("target already exists".into());
     }
@@ -266,7 +312,28 @@ pub fn fs_rename_file(
 
 #[cfg(test)]
 mod tests {
-    use super::validate_rel;
+    use super::{
+        delete_dir_under_anchor, resolve_inside, validate_rel, RecentWritesState,
+        RECENT_WRITE_KEEP_MS,
+    };
+    use std::fs;
+    use std::path::{Path, PathBuf};
+    use std::sync::atomic::{AtomicU64, Ordering};
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    // Unique temp dir per test case so parallel runs don't collide.
+    fn fresh_tempdir(tag: &str) -> PathBuf {
+        static COUNTER: AtomicU64 = AtomicU64::new(0);
+        let n = COUNTER.fetch_add(1, Ordering::SeqCst);
+        let pid = std::process::id();
+        let ms = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_nanos())
+            .unwrap_or(0);
+        let path = std::env::temp_dir().join(format!("wecode-test-{tag}-{pid}-{ms}-{n}"));
+        fs::create_dir_all(&path).expect("create tempdir");
+        path.canonicalize().expect("canonicalize tempdir")
+    }
 
     #[test]
     fn rejects_empty_and_root() {
@@ -295,5 +362,158 @@ mod tests {
     fn accepts_normal_paths() {
         assert!(validate_rel("/index.html").is_ok());
         assert!(validate_rel("/src/app.js").is_ok());
+    }
+
+    #[test]
+    fn resolve_inside_rejects_escape_via_traversal() {
+        let root = fresh_tempdir("resolve-traversal");
+        // validate_rel already catches this, but resolve_inside must also error.
+        let result = resolve_inside(&root.to_string_lossy(), "/../escape.txt");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn resolve_inside_accepts_valid_nested_path() {
+        let root = fresh_tempdir("resolve-nested");
+        fs::create_dir_all(root.join("src")).unwrap();
+        let (canonical_root, joined) =
+            resolve_inside(&root.to_string_lossy(), "/src/app.js").expect("resolve ok");
+        assert_eq!(canonical_root, root);
+        assert!(joined.starts_with(&root));
+        assert!(joined.to_string_lossy().ends_with("app.js"));
+    }
+
+    #[test]
+    fn recent_writes_records_and_detects_in_window() {
+        let state = RecentWritesState::default();
+        let path = std::env::temp_dir().join("wecode-recent-writes-test.txt");
+        state.record(&path);
+        assert!(state.was_recent(&path, 500));
+    }
+
+    #[test]
+    fn recent_writes_returns_false_for_unknown_path() {
+        let state = RecentWritesState::default();
+        let path = std::env::temp_dir().join("wecode-never-recorded.txt");
+        assert!(!state.was_recent(&path, 500));
+    }
+
+    #[test]
+    fn recent_writes_returns_false_outside_window() {
+        use std::thread::sleep;
+        use std::time::Duration;
+        let state = RecentWritesState::default();
+        let path = std::env::temp_dir().join("wecode-recent-outside.txt");
+        state.record(&path);
+        // Wait longer than the assertion window so the timestamp falls outside.
+        sleep(Duration::from_millis(20));
+        assert!(!state.was_recent(&path, 5));
+    }
+
+    #[test]
+    fn recent_writes_clear_drops_all_entries() {
+        let state = RecentWritesState::default();
+        let a = std::env::temp_dir().join("wecode-clear-a.txt");
+        let b = std::env::temp_dir().join("wecode-clear-b.txt");
+        state.record(&a);
+        state.record(&b);
+        state.clear();
+        assert!(!state.was_recent(&a, 5000));
+        assert!(!state.was_recent(&b, 5000));
+    }
+
+    #[test]
+    fn recent_writes_record_prunes_entries_beyond_keep_window() {
+        use std::thread::sleep;
+        use std::time::Duration;
+        let state = RecentWritesState::default();
+        let stale = std::env::temp_dir().join("wecode-stale.txt");
+        state.record(&stale);
+        // Force the internal timestamp beyond the keep window by poisoning
+        // the map directly.
+        {
+            let mut guard = state.0.lock().unwrap();
+            let key = stale.to_string_lossy().to_string();
+            let expired = guard
+                .get(&key)
+                .copied()
+                .unwrap_or(0)
+                .saturating_sub(RECENT_WRITE_KEEP_MS + 1000);
+            guard.insert(key, expired);
+        }
+        // A record for any path now should purge the stale entry.
+        let fresh = std::env::temp_dir().join("wecode-fresh.txt");
+        state.record(&fresh);
+        assert!(!state.was_recent(&stale, 10_000));
+        // Sleep 1 ms just to keep timing noise bounded.
+        sleep(Duration::from_millis(1));
+    }
+
+    #[test]
+    fn delete_dir_refuses_target_outside_anchor() {
+        let anchor = fresh_tempdir("delete-anchor-a");
+        let outside = fresh_tempdir("delete-outside");
+        // outside is deliberately not under anchor.
+        let result = delete_dir_under_anchor(&anchor, &outside);
+        assert!(result.is_err());
+        assert!(
+            result.unwrap_err().contains("outside"),
+            "should mention being outside the anchor"
+        );
+        // The outside directory must still exist.
+        assert!(outside.exists());
+        // Cleanup.
+        let _ = fs::remove_dir_all(&outside);
+        let _ = fs::remove_dir_all(&anchor);
+    }
+
+    #[test]
+    fn delete_dir_refuses_anchor_itself() {
+        let anchor = fresh_tempdir("delete-anchor-itself");
+        let result = delete_dir_under_anchor(&anchor, &anchor);
+        assert!(result.is_err());
+        assert!(anchor.exists());
+        let _ = fs::remove_dir_all(&anchor);
+    }
+
+    #[test]
+    fn delete_dir_accepts_subdirectory_of_anchor() {
+        let anchor = fresh_tempdir("delete-anchor-sub");
+        let project = anchor.join("myproject");
+        fs::create_dir_all(&project).unwrap();
+        fs::write(project.join("index.html"), b"<!doctype html>").unwrap();
+        delete_dir_under_anchor(&anchor, &project).expect("should delete subdir");
+        assert!(!project.exists());
+        assert!(anchor.exists());
+        let _ = fs::remove_dir_all(&anchor);
+    }
+
+    #[test]
+    fn delete_dir_is_idempotent_when_target_already_gone() {
+        let anchor = fresh_tempdir("delete-anchor-idem");
+        let gone = anchor.join("never-created");
+        let result = delete_dir_under_anchor(&anchor, &gone);
+        assert!(result.is_ok(), "absent target should be a no-op");
+        let _ = fs::remove_dir_all(&anchor);
+    }
+
+    #[test]
+    fn delete_dir_rejects_file_target() {
+        let anchor = fresh_tempdir("delete-anchor-file");
+        let file = anchor.join("oops.txt");
+        fs::write(&file, b"hi").unwrap();
+        let result = delete_dir_under_anchor(&anchor, &file);
+        assert!(result.is_err());
+        assert!(file.exists());
+        let _ = fs::remove_dir_all(&anchor);
+    }
+
+    #[test]
+    fn delete_dir_rejects_relative_path() {
+        let anchor = fresh_tempdir("delete-anchor-rel");
+        let relative = Path::new("relative/path");
+        let result = delete_dir_under_anchor(&anchor, relative);
+        assert!(result.is_err());
+        let _ = fs::remove_dir_all(&anchor);
     }
 }

@@ -57,8 +57,26 @@
 
   /* typography vars */
   --fontScale: 1;
-  --ui: "Geist", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-ui: "Geist", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* motion */
+  --t-fast: 0.12s ease;
+
+  /* shadows */
+  --shadow-soft: 0 14px 40px oklch(0 0 0 / 0.45);
+  --shadow-modal: 0 14px 40px oklch(0 0 0 / 0.5);
+  --shadow-frame: 0 40px 80px -40px oklch(0 0 0 / 0.6);
+
+  /* overlays */
+  --backdrop: oklch(0 0 0 / 0.5);
+
+  /* z-index tiers — toasts above modal so in-flight errors stay visible,
+     modal above context menus and hover hints. */
+  --z-hover: 50;
+  --z-contextmenu: 100;
+  --z-modal: 200;
+  --z-toast: 300;
 }
 
 [data-density="compact"] {
@@ -83,7 +101,7 @@ body,
   background: var(--bg-0);
   color: var(--fg-0);
   overflow: hidden;
-  font-family: var(--ui);
+  font-family: var(--font-ui);
   font-size: calc(13px * var(--fontScale));
   -webkit-font-smoothing: antialiased;
 }
@@ -232,7 +250,7 @@ button.brand {
 }
 .cmd-search .kbd {
   margin-left: auto;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.82em;
   color: var(--fg-3);
   padding: 1px 6px;
@@ -418,11 +436,6 @@ button.brand {
   color: var(--fg-0);
 }
 
-/* legacy header hidden — rail replaces it */
-.file-tree__header {
-  display: none;
-}
-
 .file-tree__list {
   list-style: none;
   margin: 0;
@@ -469,10 +482,6 @@ button.brand {
   border-radius: 2px;
 }
 
-.file-tree__icon {
-  display: none;
-}
-
 .file-tree__empty {
   padding: 12px;
   color: var(--fg-3);
@@ -496,7 +505,7 @@ button.brand {
   height: 16px;
   display: grid;
   place-items: center;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.68em;
   font-weight: 700;
   border-radius: 3px;
@@ -610,7 +619,9 @@ button.brand {
     color 0.12s;
 }
 .tab:hover .tab__close,
-.tab--active .tab__close {
+.tab:focus-within .tab__close,
+.tab--active .tab__close,
+.tab__close:focus-visible {
   opacity: 1;
 }
 .tab__close:hover {
@@ -635,7 +646,7 @@ button.brand {
   color: var(--fg-0);
 }
 .code-editor .cm-scroller {
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: calc(12.5px * var(--fontScale));
   line-height: 1.6;
 }
@@ -657,6 +668,9 @@ button.brand {
 .code-editor .cm-cursor {
   border-left-color: var(--accent);
 }
+/* CodeMirror ships its own inline `background` on `.cm-selectionBackground`
+   at mount, defeating ordinary specificity. `!important` is the supported
+   override path — keep it and document the why. */
 .code-editor .cm-selectionBackground,
 .code-editor .cm-focused .cm-selectionBackground,
 .code-editor ::selection {
@@ -732,7 +746,7 @@ button.brand {
   background: var(--bg-1);
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-sm);
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.85em;
   color: var(--fg-1);
   min-width: 0;
@@ -753,7 +767,7 @@ button.brand {
 }
 .prev-url .live {
   margin-left: auto;
-  font-family: var(--ui);
+  font-family: var(--font-ui);
   font-size: 0.88em;
   color: var(--fg-3);
   display: flex;
@@ -822,10 +836,12 @@ button.brand {
 }
 
 .prev-frame {
+  /* Preview iframe renders user HTML — keep a neutral white background
+     here so their page reads normally, not against the app's dark chrome. */
   background: #ffffff;
   border-radius: 10px;
   box-shadow:
-    0 40px 80px -40px rgba(0, 0, 0, 0.6),
+    var(--shadow-frame),
     0 0 0 1px var(--line);
   overflow: hidden;
   transition:
@@ -884,13 +900,13 @@ button.brand {
 
 .context-menu {
   position: fixed;
-  z-index: 100;
+  z-index: var(--z-contextmenu);
   min-width: 160px;
   background: var(--bg-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 4px 0;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-modal);
 }
 .context-menu__item {
   display: block;
@@ -917,11 +933,11 @@ button.brand {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--backdrop);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 200;
+  z-index: var(--z-modal);
 }
 .modal {
   background: var(--bg-2);
@@ -977,12 +993,12 @@ button.brand {
   font-size: 0.92em;
   line-height: 1.5;
 }
-.modal__btn-destructive {
-  background: var(--err) !important;
-  color: var(--bg-0) !important;
+.modal__actions button.modal__btn-destructive {
+  background: var(--err);
+  color: var(--bg-0);
 }
-.modal__btn-destructive:hover {
-  background: oklch(0.78 0.18 25) !important;
+.modal__actions button.modal__btn-destructive:hover {
+  background: oklch(0.78 0.18 25);
 }
 
 /* ============================================================
@@ -993,7 +1009,7 @@ button.brand {
   position: fixed;
   right: 16px;
   bottom: calc(var(--h-status) + 16px);
-  z-index: 300;
+  z-index: var(--z-toast);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1010,7 +1026,7 @@ button.brand {
   background: var(--bg-2);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-soft);
   color: var(--fg-0);
   font-size: 0.92em;
   animation: toast-in 0.16s ease-out both;
@@ -1123,7 +1139,7 @@ button.brand {
   color: var(--bg-0);
   display: grid;
   place-items: center;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.78em;
   font-weight: 700;
 }
@@ -1173,7 +1189,7 @@ button.brand {
   font-size: 0.96em;
 }
 .inline-code {
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.9em;
   background: var(--bg-2);
   color: var(--fg-0);
@@ -1246,7 +1262,7 @@ button.brand {
   text-decoration-color: var(--fg-3);
 }
 .cp .meta {
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.78em;
   color: var(--fg-3);
 }
@@ -1280,11 +1296,11 @@ button.brand {
   border-radius: var(--radius);
   padding: 12px 14px;
   color: var(--fg-1);
-  font-family: var(--ui);
+  font-family: var(--font-ui);
   font-size: 0.92em;
   box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    var(--shadow-modal),
+    inset 0 0 0 1px oklch(1 0 0 / 0.02);
   animation: hc-in 0.12s ease-out both;
 }
 @keyframes hc-in {
@@ -1301,14 +1317,14 @@ button.brand {
   margin: 0 0 6px;
   font-size: 1em;
   font-weight: 600;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   color: var(--fg-0);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 .hint-card .kind {
-  font-family: var(--ui);
+  font-family: var(--font-ui);
   font-weight: 500;
   letter-spacing: 0.08em;
   font-size: 0.68em;
@@ -1325,7 +1341,7 @@ button.brand {
 }
 .hint-card .ex {
   margin: 0;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 0.85em;
   background: var(--bg-0);
   border: 1px solid var(--line-soft);
@@ -1380,7 +1396,7 @@ button.brand {
 }
 .home-brand-ver {
   margin-left: auto;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   color: var(--fg-3);
   font-size: 11px;
 }
@@ -1401,8 +1417,7 @@ button.brand {
   letter-spacing: -0.02em;
   color: var(--fg-0);
 }
-.home-greet-title em {
-  font-style: normal;
+.home-greet-accent {
   color: var(--accent);
 }
 
@@ -1502,7 +1517,7 @@ button.brand {
   cursor: default;
 }
 .home-search-kbd {
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--fg-3);
   padding: 2px 6px;
@@ -1609,7 +1624,7 @@ button.brand {
 
 .home-sec-count {
   color: var(--fg-3);
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 11px;
 }
 
@@ -1677,7 +1692,7 @@ button.brand {
   flex-wrap: wrap;
   color: var(--fg-3);
   font-size: 12px;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
 }
 .home-continue-meta {
   display: inline-flex;
@@ -1780,7 +1795,7 @@ button.brand {
   border-radius: 8px;
   display: grid;
   place-items: center;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   flex: none;
@@ -1837,7 +1852,7 @@ button.brand {
 }
 .home-proj-path {
   color: var(--fg-3);
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 11px;
   margin-top: 2px;
   overflow: hidden;
@@ -1857,13 +1872,13 @@ button.brand {
   border-radius: 3px;
   background: var(--bg-0);
   border: 1px solid var(--line-soft);
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   letter-spacing: 0.02em;
 }
 .home-proj-when {
   color: var(--fg-3);
   font-size: 11px;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   text-align: right;
 }
 .home-proj-open {
@@ -1935,7 +1950,7 @@ button.brand {
   border-radius: 5px;
   display: grid;
   place-items: center;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   margin-bottom: 2px;
@@ -2042,7 +2057,7 @@ button.brand {
 .modal__location-path {
   flex: 1;
   min-width: 0;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--fg-1);
   overflow: hidden;
@@ -2068,7 +2083,7 @@ button.brand {
   background: var(--bg-1);
   border: 1px solid var(--line-soft);
   border-radius: var(--radius-sm);
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--fg-2);
   overflow: hidden;

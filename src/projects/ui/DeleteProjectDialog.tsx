@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
+import { useModalA11y } from "../../hooks/useModalA11y";
 import { toast } from "../../ide/shell/toastStore";
 import { deleteProject } from "../actions";
 import { useProjectStore } from "../projectStore";
@@ -14,6 +15,8 @@ export function DeleteProjectDialog({ projectId }: Props) {
   const project = useProjectStore((s) => s.projects.find((p) => p.id === projectId));
   const [removeFromDisk, setRemoveFromDisk] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useModalA11y(modalRef, { onClose: submitting ? () => {} : closeAll });
 
   if (!project) return null;
 
@@ -29,15 +32,28 @@ export function DeleteProjectDialog({ projectId }: Props) {
       closeAll();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : String(err));
-    } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true">
-      <div className="modal">
-        <div className="modal__title">Supprimer le projet</div>
+    <div
+      className="modal-backdrop"
+      onClick={() => {
+        if (!submitting) closeAll();
+      }}
+    >
+      <div
+        ref={modalRef}
+        className="modal"
+        onClick={(e) => e.stopPropagation()}
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="delete-project-title"
+      >
+        <div id="delete-project-title" className="modal__title">
+          Supprimer le projet
+        </div>
         <div className="modal__body">
           Le projet <strong>{project.name}</strong> sera retiré de ta liste.
           <div className="modal__path" title={project.path}>

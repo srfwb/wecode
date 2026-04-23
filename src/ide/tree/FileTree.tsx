@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useModalA11y } from "../../hooks/useModalA11y";
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
 import { ConfirmDialog } from "../shell/ConfirmDialog";
+import { localizeFileError } from "../shell/fileErrorMessages";
 import { FileTypeIcon } from "../shell/FileTypeIcon";
 import { SHORTCUT_NEW_FILE, shortcutEvents } from "../shell/shortcuts";
 import { toast } from "../shell/toastStore";
@@ -62,7 +64,7 @@ export function FileTree() {
         vfs.renameFile(prompt.originalPath, target);
       }
     } catch (err) {
-      toast.error((err as Error).message);
+      toast.error(localizeFileError(err));
     }
     closePrompt();
   };
@@ -72,7 +74,7 @@ export function FileTree() {
     try {
       vfs.deleteFile(pendingDelete);
     } catch (err) {
-      toast.error((err as Error).message);
+      toast.error(localizeFileError(err));
     }
     setPendingDelete(null);
   };
@@ -176,6 +178,7 @@ export function FileTree() {
         <PromptModal
           title={prompt.kind === "create" ? "Nouveau fichier" : "Renommer"}
           initial={prompt.initial}
+          allowSlash={prompt.kind === "create"}
           onSubmit={submitPrompt}
           onCancel={closePrompt}
         />
@@ -281,44 +284,76 @@ function buildMenuItems(
 interface PromptModalProps {
   title: string;
   initial: string;
+  // Renaming may not introduce slashes (that would relocate the file via the
+  // modal — surprising). Creating is allowed to accept a slashed path so
+  // users can create `src/app.js` in one go.
+  allowSlash: boolean;
   onSubmit: (value: string) => void;
   onCancel: () => void;
 }
 
-function PromptModal({ title, initial, onSubmit, onCancel }: PromptModalProps) {
-  const [value, setValue] = useState(initial);
+const FORBIDDEN_NAME_CHARS = /[\\:*?"<>|]/;
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onCancel();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onCancel]);
+function validatePromptValue(value: string, allowSlash: boolean): string {
+  const trimmed = value.trim();
+  if (trimmed === "") return "";
+  if (!allowSlash && trimmed.includes("/")) {
+    return "Le nom ne peut pas contenir « / ».";
+  }
+  if (FORBIDDEN_NAME_CHARS.test(trimmed)) {
+    return "Caractère interdit dans le nom.";
+  }
+  for (const segment of trimmed.split("/")) {
+    if (segment === "." || segment === "..") {
+      return "Le nom ne peut pas contenir « . » ou « .. ».";
+    }
+  }
+  return "";
+}
+
+function PromptModal({ title, initial, allowSlash, onSubmit, onCancel }: PromptModalProps) {
+  const [value, setValue] = useState(initial);
+  const modalRef = useRef<HTMLFormElement>(null);
+  useModalA11y(modalRef, { onClose: onCancel });
+
+  const error = validatePromptValue(value, allowSlash);
+  const canSubmit = value.trim().length > 0 && !error;
 
   return (
     <div className="modal-backdrop" onClick={onCancel}>
       <form
+        ref={modalRef}
         className="modal"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="prompt-modal-title"
         onSubmit={(e) => {
           e.preventDefault();
+          if (!canSubmit) return;
           onSubmit(value);
         }}
       >
-        <div className="modal__title">{title}</div>
-        <input
-          autoFocus
-          className="modal__input"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="nom du fichier"
-        />
+        <div id="prompt-modal-title" className="modal__title">
+          {title}
+        </div>
+        <label className="modal__field">
+          <input
+            autoFocus
+            className="modal__input"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="nom du fichier"
+          />
+          {error && <span className="modal__error">{error}</span>}
+        </label>
         <div className="modal__actions">
           <button type="button" onClick={onCancel}>
             Annuler
           </button>
-          <button type="submit">Valider</button>
+          <button type="submit" disabled={!canSubmit}>
+            Valider
+          </button>
         </div>
       </form>
     </div>

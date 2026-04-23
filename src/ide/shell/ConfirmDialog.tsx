@@ -1,4 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+
+import { useModalA11y } from "../../hooks/useModalA11y";
 
 interface ConfirmDialogProps {
   title: string;
@@ -19,30 +21,27 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    confirmRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onCancel();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onCancel]);
+  useModalA11y(modalRef, { onClose: onCancel, initialFocus: confirmRef });
 
   return (
     <div className="modal-backdrop" onClick={onCancel}>
       <div
+        ref={modalRef}
         className="modal"
         onClick={(e) => e.stopPropagation()}
         role="alertdialog"
         aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-body"
       >
-        <div className="modal__title">{title}</div>
-        <div className="modal__body">{message}</div>
+        <div id="confirm-dialog-title" className="modal__title">
+          {title}
+        </div>
+        <div id="confirm-dialog-body" className="modal__body">
+          {message}
+        </div>
         <div className="modal__actions">
           <button type="button" onClick={onCancel}>
             {cancelLabel}

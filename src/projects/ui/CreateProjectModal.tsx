@@ -1,7 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { useModalA11y } from "../../hooks/useModalA11y";
 import { toast } from "../../ide/shell/toastStore";
 import { createProject } from "../actions";
 import { joinChild, validateProjectName } from "../paths";
@@ -18,6 +19,8 @@ export function CreateProjectModal({ initialTemplateId }: Props) {
   const [templateId, setTemplateId] = useState<TemplateId>(initialTemplateId);
   const [parentDir, setParentDir] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
+  const modalRef = useRef<HTMLFormElement>(null);
+  useModalA11y(modalRef, { onClose: closeAll });
 
   useEffect(() => {
     void (async () => {
@@ -65,9 +68,19 @@ export function CreateProjectModal({ initialTemplateId }: Props) {
   };
 
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true">
-      <form className="modal modal--wide" onSubmit={submit}>
-        <div className="modal__title">Nouveau projet</div>
+    <div className="modal-backdrop" onClick={closeAll}>
+      <form
+        ref={modalRef}
+        className="modal modal--wide"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-project-title"
+        onSubmit={submit}
+      >
+        <div id="create-project-title" className="modal__title">
+          Nouveau projet
+        </div>
         <label className="modal__field">
           <span className="modal__label">Nom du projet</span>
           <input

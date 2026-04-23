@@ -69,8 +69,19 @@ async function createProjectImpl(input: {
   await invoke("fs_ensure_dir", { dirPath: projectPath });
 
   const template = getTemplate(input.templateId);
-  for (const [relPath, content] of Object.entries(template.files)) {
-    await invoke("fs_write_file", { projectPath, relPath, content });
+  try {
+    for (const [relPath, content] of Object.entries(template.files)) {
+      await invoke("fs_write_file", { projectPath, relPath, content });
+    }
+  } catch (err) {
+    // Roll back the partial directory so the user isn't stuck with an
+    // orphan folder that blocks every future create at the same path.
+    try {
+      await invoke("fs_delete_dir", { dirPath: projectPath });
+    } catch (cleanupErr) {
+      console.warn("rollback after createProject failure", cleanupErr);
+    }
+    throw err;
   }
 
   const id = crypto.randomUUID();
@@ -108,6 +119,14 @@ async function deleteProjectImpl(id: string, opts: { removeFromDisk: boolean }):
   if (!project) throw new Error(`unknown project: ${id}`);
   const isActive = state.activeProjectId === id;
 
+  // Try the disk-delete first (if requested) so a failure leaves the app's
+  // state untouched rather than half-torn-down. `fs_delete_dir` is now
+  // idempotent on already-absent paths (A1), so re-running after a transient
+  // failure is safe.
+  if (opts.removeFromDisk) {
+    await invoke("fs_delete_dir", { dirPath: project.path });
+  }
+
   if (isActive) {
     const autosave = getAutoSaveHandle();
     if (autosave) await autosave.flush();
@@ -123,10 +142,6 @@ async function deleteProjectImpl(id: string, opts: { removeFromDisk: boolean }):
     } catch (err) {
       console.warn("syncVfs after delete failed (ignored)", err);
     }
-  }
-
-  if (opts.removeFromDisk) {
-    await invoke("fs_delete_dir", { dirPath: project.path });
   }
 
   const remaining = state.projects.filter((p) => p.id !== id);

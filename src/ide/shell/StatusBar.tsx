@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { APP_VERSION } from "../../constants/version";
 import { useIdeStore } from "../../state/ideStore";
 import { bridgeEvents } from "../../tauri/bridge";
 import { extname } from "../../vfs/paths";
@@ -33,8 +34,6 @@ function formatSavedAgo(at: number | null, now: number): string {
   const hours = Math.floor(minutes / 60);
   return `Sauvegardé il y a ${hours} h`;
 }
-
-const APP_VERSION = "v0.1.0";
 
 export function StatusBar() {
   const activeFile = useIdeStore((s) => s.activeFile);

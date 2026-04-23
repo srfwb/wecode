@@ -1,13 +1,21 @@
 import { invoke } from "@tauri-apps/api/core";
 
 import { useIdeStore } from "../state/ideStore";
-import { syncVfs } from "../tauri/bridge";
+import { syncVfsNow } from "../tauri/bridge";
 import { vfs } from "../vfs/VirtualFS";
 import { getAutoSaveHandle } from "./diskAutoSave";
 import { joinChild, validateProjectName } from "./paths";
 import { useProjectStore } from "./projectStore";
+import { createSerializeQueue } from "./serializeQueue";
 import { getTemplate, type TemplateId } from "./templates";
 import type { ListedFile, ProjectMeta } from "./types";
+
+// Queue open/create/delete so rapid clicks can't interleave. Without this,
+// two overlapping `openProject(A)` / `openProject(B)` calls can end up with
+// project B's files in project A's folder: step 4 of B writes the hydrated
+// VFS via syncVfs while step 5 of A starts a watcher for A — the next
+// autosave then takes the current (B) snapshot and writes it to A's path.
+const serialize = createSerializeQueue();
 
 export async function loadProjectFilesFromDisk(meta: ProjectMeta): Promise<Record<string, string>> {
   const listed = await invoke<ListedFile[]>("fs_list_project", { projectPath: meta.path });
@@ -33,7 +41,15 @@ export function renameProject(id: string, newName: string): void {
   useProjectStore.getState().upsert({ ...project, name });
 }
 
-export async function createProject(input: {
+export function createProject(input: {
+  name: string;
+  templateId: TemplateId;
+  parentDir?: string;
+}): Promise<string> {
+  return serialize(() => createProjectImpl(input));
+}
+
+async function createProjectImpl(input: {
   name: string;
   templateId: TemplateId;
   parentDir?: string;
@@ -76,11 +92,17 @@ export async function createProject(input: {
     lineCount,
   };
   useProjectStore.getState().upsert(meta);
-  await openProject(id);
+  // Already inside the serialize queue — bypass the wrapper to avoid
+  // self-deadlocking when the impl calls the public entry point.
+  await openProjectImpl(id);
   return id;
 }
 
-export async function deleteProject(id: string, opts: { removeFromDisk: boolean }): Promise<void> {
+export function deleteProject(id: string, opts: { removeFromDisk: boolean }): Promise<void> {
+  return serialize(() => deleteProjectImpl(id, opts));
+}
+
+async function deleteProjectImpl(id: string, opts: { removeFromDisk: boolean }): Promise<void> {
   const state = useProjectStore.getState();
   const project = state.projects.find((p) => p.id === id);
   if (!project) throw new Error(`unknown project: ${id}`);
@@ -97,7 +119,7 @@ export async function deleteProject(id: string, opts: { removeFromDisk: boolean 
     vfs.hydrate({});
     if (autosave) autosave.markBaseline({});
     try {
-      await syncVfs({});
+      await syncVfsNow({});
     } catch (err) {
       console.warn("syncVfs after delete failed (ignored)", err);
     }
@@ -118,14 +140,18 @@ export async function deleteProject(id: string, opts: { removeFromDisk: boolean 
 
   if (isActive) {
     if (nextActive) {
-      await openProject(nextActive);
+      await openProjectImpl(nextActive);
     } else {
       useIdeStore.getState().setView("home");
     }
   }
 }
 
-export async function openProject(id: string): Promise<void> {
+export function openProject(id: string): Promise<void> {
+  return serialize(() => openProjectImpl(id));
+}
+
+async function openProjectImpl(id: string): Promise<void> {
   const autosave = getAutoSaveHandle();
   if (autosave) await autosave.flush();
 
@@ -141,7 +167,7 @@ export async function openProject(id: string): Promise<void> {
   const files = await loadProjectFilesFromDisk(meta);
   vfs.hydrate(files);
   if (autosave) autosave.markBaseline(files);
-  await syncVfs(vfs.snapshot());
+  await syncVfsNow(vfs.snapshot());
 
   try {
     await invoke("watcher_start", { projectPath: meta.path });

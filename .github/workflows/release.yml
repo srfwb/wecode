@@ -50,7 +50,7 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: WeCode ${{ github.ref_name }}
           releaseBody: |
-            See [CHANGELOG.md](CHANGELOG.md) for the list of changes.
+            See the [${{ github.ref_name }} changelog](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md) for the list of changes.
 
             ## Install
             - **Windows**: download the `.msi` installer

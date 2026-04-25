@@ -19,6 +19,7 @@ export function ProjectCard({ project, index = 0 }: Props) {
 
   const onContext = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setMenu({ x: e.clientX, y: e.clientY });
   };
 

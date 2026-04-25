@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="og-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e3a15b"/>
+      <stop offset="1" stop-color="#8a5e30"/>
+    </linearGradient>
+    <radialGradient id="og-glow" cx="80%" cy="20%" r="50%">
+      <stop offset="0" stop-color="#e3a15b" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#e3a15b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1e1d24"/>
+  <rect width="1200" height="630" fill="url(#og-glow)"/>
+
+  <!-- Logo: amber tile + W mark -->
+  <rect x="76" y="62" width="48" height="48" rx="12" fill="url(#og-tile)"/>
+  <g transform="translate(85.1 71.1) scale(0.465)"
+     stroke="#1e1d24" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M14 18 L22 46 L32 24 L42 46 L50 18"/>
+  </g>
+
+  <!-- "WeCode" next to tile -->
+  <text x="140" y="98"
+        font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-size="30" font-weight="500" letter-spacing="-0.66px"
+        fill="#f5f2eb">WeCode</text>
+
+  <!-- Tagline -->
+  <text font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-size="52" font-weight="500" letter-spacing="-1.04px"
+        fill="#f5f2eb">
+    <tspan x="76" y="360">Learn the web by <tspan fill="#e3a15b">building</tspan></tspan>
+    <tspan x="76" dy="62"><tspan fill="#e3a15b">it</tspan>, line by line.</tspan>
+  </text>
+
+  <!-- Footer -->
+  <text x="76" y="575"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="18" fill="#908d85">wecode.app</text>
+  <text x="1124" y="575" text-anchor="end"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="18" fill="#6b6963">An IDE that teaches.</text>
+</svg>

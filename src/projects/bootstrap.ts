@@ -38,7 +38,13 @@ export async function bootstrapProjects(): Promise<void> {
     useProjectStore.getState().hydrate(existing);
     const activeId = existing.activeProjectId ?? existing.projects[0]?.id ?? null;
     if (activeId && existing.projects.some((p) => p.id === activeId)) {
-      await openProject(activeId);
+      try {
+        await openProject(activeId);
+      } catch (err) {
+        // The project's folder may have been deleted externally while the
+        // app was closed. Fall through to the Home view instead of crashing.
+        console.warn("bootstrap: could not reopen last project, showing Home", err);
+      }
     }
     return;
   }

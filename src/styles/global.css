@@ -2131,15 +2131,12 @@ button.brand {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   z-index: calc(var(--z-modal) - 1);
-  animation: palette-fade-in 0.12s ease;
+  animation: palette-backdrop-in 0.18s ease;
 }
 
-@keyframes palette-fade-in {
+@keyframes palette-backdrop-in {
   from {
     opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -2153,6 +2150,15 @@ button.brand {
   display: flex;
   flex-direction: column;
   font-family: var(--font-ui);
+  animation: palette-enter 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top center;
+}
+
+@keyframes palette-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.96) translateY(-8px);
+  }
 }
 
 .palette-bar {

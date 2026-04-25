@@ -11,6 +11,10 @@ import { bootstrapIdeStore } from "./state/ideStore";
 import { attachVfsBridge } from "./tauri/bridge";
 import { vfs } from "./vfs/VirtualFS";
 
+// Block the Chromium/WebView native context menu everywhere. Individual React
+// components provide their own right-click menus where it makes sense.
+document.addEventListener("contextmenu", (e) => e.preventDefault());
+
 async function bootstrap() {
   const disposers: Array<() => void> = [];
 

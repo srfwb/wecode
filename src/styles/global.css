@@ -125,7 +125,11 @@ button {
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
-.home-search input:focus-visible,
+.home-search input:focus-visible {
+  /* HomeSearch input is a read-only trigger, not a real text field — the
+     amber ring looks like a browser selection artifact when clicking it. */
+  outline: none;
+}
 .modal__input:focus-visible,
 .modal__select:focus-visible {
   outline: 2px solid var(--accent);
@@ -2131,7 +2135,7 @@ button.brand {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   z-index: calc(var(--z-modal) - 1);
-  animation: palette-backdrop-in 0.18s ease;
+  animation: palette-backdrop-in 0.28s ease;
 }
 
 @keyframes palette-backdrop-in {
@@ -2140,6 +2144,11 @@ button.brand {
   }
 }
 
+/* FLIP animation: HomeSearch measures its own rect on click and writes
+   --palette-dy / --palette-dx / --palette-sx as CSS custom properties on
+   <html>. The keyframe starts at those offsets (the search bar's position
+   and width) and settles at the palette's resting center. All transforms
+   → GPU-composited, zero layout thrash. */
 .palette-root {
   position: fixed;
   top: 88px;
@@ -2150,14 +2159,18 @@ button.brand {
   display: flex;
   flex-direction: column;
   font-family: var(--font-ui);
-  animation: palette-enter 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: palette-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: top center;
 }
 
 @keyframes palette-enter {
   from {
     opacity: 0;
-    transform: translateX(-50%) scale(0.96) translateY(-8px);
+    transform: translateX(calc(-50% + var(--palette-dx, 0px))) translateY(var(--palette-dy, 0px))
+      scaleX(var(--palette-sx, 1));
+  }
+  15% {
+    opacity: 1;
   }
 }
 

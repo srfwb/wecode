@@ -1,6 +1,12 @@
-# WeCode
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg" />
+    <img src="assets/banner-dark.svg" alt="WeCode" width="480" />
+  </picture>
+</p>
 
-Learn HTML and CSS in a desktop IDE with live preview.
+<p align="center">Learn HTML and CSS in a desktop IDE with live preview.</p>
 
 WeCode is a cross-platform desktop application that pairs a multi-file code editor with an instant rendered preview, built for people picking up their first web pages. The first milestone focuses solely on the IDE — courses and exercises will follow.
 

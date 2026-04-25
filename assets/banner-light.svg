@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" fill="none">
+  <!-- Ink tile (dark background) -->
+  <rect x="172" y="30" width="60" height="60" rx="14" fill="#1a1a1e"/>
+
+  <!-- W mark in amber -->
+  <g transform="translate(183.4 41.4) scale(0.58125)"
+     stroke="#e3a15b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 18 L22 46 L32 24 L42 46 L50 18"/>
+  </g>
+
+  <!-- Wordmark text -->
+  <text x="250" y="72"
+        font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-size="42" font-weight="500" letter-spacing="-0.022em"
+        fill="#1a1a1e">WeCode</text>
+</svg>

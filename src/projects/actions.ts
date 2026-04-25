@@ -64,7 +64,7 @@ async function createProjectImpl(input: {
   const projectPath = joinChild(parentDir, name);
   const exists = await invoke<boolean>("fs_path_exists", { path: projectPath });
   if (exists) {
-    throw new Error(`Un dossier existe déjà à ${projectPath}.`);
+    throw new Error(`Un projet avec ce nom existe déjà dans ce dossier.`);
   }
   await invoke("fs_ensure_dir", { dirPath: projectPath });
 

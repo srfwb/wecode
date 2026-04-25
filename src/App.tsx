@@ -1,3 +1,4 @@
+import { LogoDefs } from "./components/LogoMark";
 import { HomeShell } from "./home/HomeShell";
 import { IdeShell } from "./ide/shell/IdeShell";
 import { Toasts } from "./ide/shell/Toasts";
@@ -11,6 +12,7 @@ function App() {
   useCommandPaletteShortcut();
   return (
     <>
+      <LogoDefs />
       {view === "home" ? <HomeShell key="home" /> : <IdeShell key="ide" />}
       <CommandPalette />
       <Toasts />

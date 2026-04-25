@@ -214,6 +214,25 @@ button.brand {
 
 .brand-mark {
   flex: none;
+  display: block;
+}
+
+.brand-tile {
+  display: grid;
+  place-items: center;
+  border-radius: 24%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  flex: none;
+  overflow: hidden;
+}
+.brand-tile svg {
+  width: 62%;
+  height: 62%;
+  display: block;
+}
+.brand-tile--outline {
+  background: transparent;
+  border: 1.5px solid var(--accent);
 }
 
 .toolbar-center {

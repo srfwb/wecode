@@ -1,4 +1,4 @@
-import { openPath } from "@tauri-apps/plugin-opener";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { useState } from "react";
 
 import { ContextMenu } from "../../ide/tree/ContextMenu";
@@ -61,7 +61,7 @@ export function ProjectCard({ project, index = 0 }: Props) {
             { label: "Ouvrir", onSelect: () => void openProject(project.id) },
             {
               label: "Ouvrir le dossier",
-              onSelect: () => void openPath(project.path),
+              onSelect: () => void revealItemInDir(project.path),
             },
             { label: "Renommer", onSelect: () => openRename({ id: project.id }) },
             {

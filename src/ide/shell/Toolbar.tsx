@@ -1,3 +1,4 @@
+import { LogoMark } from "../../components/LogoMark";
 import { useIdeStore } from "../../state/ideStore";
 
 export function Toolbar() {
@@ -10,7 +11,7 @@ export function Toolbar() {
         onClick={() => setView("home")}
         aria-label="Retour à l'accueil"
       >
-        <div className="brand-mark" aria-hidden="true" />
+        <LogoMark size={20} />
         <span>WeCode</span>
       </button>
 

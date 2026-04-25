@@ -213,19 +213,7 @@ button.brand {
 }
 
 .brand-mark {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-  position: relative;
-}
-.brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: 4px 5px;
-  border-left: 1.5px solid var(--bg-0);
-  border-right: 1.5px solid var(--bg-0);
-  transform: skewX(-18deg);
+  flex: none;
 }
 
 .toolbar-center {
@@ -1388,14 +1376,6 @@ button.brand {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-.home-brand .brand-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-}
-.home-brand .brand-mark::after {
-  inset: 5px 7px;
 }
 .home-brand-name {
   font-weight: 600;

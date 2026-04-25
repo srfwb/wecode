@@ -595,6 +595,12 @@ button.brand {
   color: var(--fg-0);
   background: var(--bg-1);
 }
+.tab:focus-visible {
+  outline: none;
+  color: var(--fg-0);
+  background: var(--bg-1);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
 .tab--active {
   color: var(--fg-0);
   background: var(--bg-1);
@@ -1443,6 +1449,25 @@ button.brand {
   color: var(--fg-1);
   font-size: 13px;
   position: relative;
+  width: 100%;
+  text-align: left;
+  cursor: default;
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+.home-nav-item:not([disabled]):hover {
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
+.home-nav-item:focus-visible {
+  outline: none;
+  background: var(--bg-2);
+  color: var(--fg-0);
+}
+.home-nav-item[disabled] {
+  opacity: 0.5;
+  cursor: default;
 }
 .home-nav-item--active {
   background: var(--bg-3);
@@ -1477,7 +1502,7 @@ button.brand {
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  cursor: default;
+  cursor: pointer;
   color: inherit;
 }
 .home-rail-link:hover {
@@ -1779,8 +1804,8 @@ button.brand {
   text-align: left;
   cursor: pointer;
   position: relative;
-  animation: proj-in 220ms ease-out both;
-  animation-delay: min(calc(var(--proj-idx, 0) * 40ms), 240ms);
+  animation: proj-in 180ms ease-out both;
+  animation-delay: min(calc(var(--proj-idx, 0) * 25ms), 120ms);
   transition:
     background 0.12s,
     border-color 0.12s,

@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
+import { toast } from "../ide/shell/toastStore";
 import { persistenceEvents } from "../vfs/persistence";
 import type { VirtualFS } from "../vfs/VirtualFS";
 import { useProjectStore } from "./projectStore";
@@ -66,6 +67,7 @@ export function attachDiskAutoSave(vfs: VirtualFS): AutoSaveHandle {
           }
         } catch (err) {
           console.error("disk autosave job failed", relPath, err);
+          toast.error(`Impossible de sauvegarder ${relPath} sur le disque.`);
         }
       }
       const paths = vfs.listFiles();

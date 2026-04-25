@@ -38,6 +38,10 @@ export function renameProject(id: string, newName: string): void {
   const project = useProjectStore.getState().projects.find((p) => p.id === id);
   if (!project) throw new Error(`unknown project: ${id}`);
   if (project.name === name) return;
+  const duplicate = useProjectStore
+    .getState()
+    .projects.some((p) => p.id !== id && p.name.toLowerCase() === name.toLowerCase());
+  if (duplicate) throw new Error(`Un projet avec le nom « ${name} » existe déjà.`);
   useProjectStore.getState().upsert({ ...project, name });
 }
 
@@ -64,7 +68,7 @@ async function createProjectImpl(input: {
   const projectPath = joinChild(parentDir, name);
   const exists = await invoke<boolean>("fs_path_exists", { path: projectPath });
   if (exists) {
-    throw new Error(`Un dossier existe déjà à ${projectPath}.`);
+    throw new Error(`Un projet avec ce nom existe déjà dans ce dossier.`);
   }
   await invoke("fs_ensure_dir", { dirPath: projectPath });
 
@@ -191,5 +195,10 @@ async function openProjectImpl(id: string): Promise<void> {
   }
 
   useProjectStore.getState().setActive(id, { touch: true });
+  // Reset open tabs so stale paths from the previous project don't linger.
+  // The IDE hydration logic in `bootstrapIdeStore` handles restoring tabs
+  // from the persisted snapshot, but on a live switch the old tabs would
+  // survive until the next persistence round-trip.
+  useIdeStore.setState({ openFiles: [], activeFile: null });
   useIdeStore.getState().setView("ide");
 }

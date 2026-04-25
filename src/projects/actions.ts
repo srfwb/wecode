@@ -38,6 +38,10 @@ export function renameProject(id: string, newName: string): void {
   const project = useProjectStore.getState().projects.find((p) => p.id === id);
   if (!project) throw new Error(`unknown project: ${id}`);
   if (project.name === name) return;
+  const duplicate = useProjectStore
+    .getState()
+    .projects.some((p) => p.id !== id && p.name.toLowerCase() === name.toLowerCase());
+  if (duplicate) throw new Error(`Un projet avec le nom « ${name} » existe déjà.`);
   useProjectStore.getState().upsert({ ...project, name });
 }
 

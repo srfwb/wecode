@@ -923,6 +923,10 @@ button.brand {
 .context-menu__item:hover {
   background: var(--bg-3);
 }
+.context-menu__item:focus-visible {
+  outline: none;
+  background: var(--bg-3);
+}
 .context-menu__item--destructive {
   color: var(--err);
 }
@@ -2144,34 +2148,17 @@ button.brand {
   }
 }
 
-/* FLIP animation: HomeSearch measures its own rect on click and writes
-   --palette-dy / --palette-dx / --palette-sx as CSS custom properties on
-   <html>. The keyframe starts at those offsets (the search bar's position
-   and width) and settles at the palette's resting center. All transforms
-   → GPU-composited, zero layout thrash. */
 .palette-root {
   position: fixed;
   top: 88px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(720px, calc(100vw - 48px));
+  width: min(800px, calc(100vw - 48px));
   z-index: var(--z-modal);
   display: flex;
   flex-direction: column;
   font-family: var(--font-ui);
-  animation: palette-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: top center;
-}
-
-@keyframes palette-enter {
-  from {
-    opacity: 0;
-    transform: translateX(calc(-50% + var(--palette-dx, 0px))) translateY(var(--palette-dy, 0px))
-      scaleX(var(--palette-sx, 1));
-  }
-  15% {
-    opacity: 1;
-  }
+  animation: palette-backdrop-in 0.15s ease;
 }
 
 .palette-bar {

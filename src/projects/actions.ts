@@ -195,5 +195,10 @@ async function openProjectImpl(id: string): Promise<void> {
   }
 
   useProjectStore.getState().setActive(id, { touch: true });
+  // Reset open tabs so stale paths from the previous project don't linger.
+  // The IDE hydration logic in `bootstrapIdeStore` handles restoring tabs
+  // from the persisted snapshot, but on a live switch the old tabs would
+  // survive until the next persistence round-trip.
+  useIdeStore.setState({ openFiles: [], activeFile: null });
   useIdeStore.getState().setView("ide");
 }

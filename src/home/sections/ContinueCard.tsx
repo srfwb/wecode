@@ -1,4 +1,4 @@
-import { openPath } from "@tauri-apps/plugin-opener";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 import { IconChevronRight } from "../icons";
 import { openProject } from "../../projects/actions";
@@ -40,7 +40,7 @@ export function ContinueCard({ project }: Props) {
         <button
           type="button"
           className="home-btn home-btn--ghost"
-          onClick={() => void openPath(project.path)}
+          onClick={() => void revealItemInDir(project.path)}
         >
           Ouvrir le dossier
         </button>

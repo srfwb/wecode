@@ -2158,7 +2158,14 @@ button.brand {
   display: flex;
   flex-direction: column;
   font-family: var(--font-ui);
-  animation: palette-backdrop-in 0.15s ease;
+  animation: palette-enter 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes palette-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.96) translateY(-8px);
+  }
 }
 
 .palette-bar {

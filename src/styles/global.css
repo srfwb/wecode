@@ -2063,6 +2063,10 @@ button.brand {
   background: var(--bg-2);
   border-color: var(--line);
 }
+.modal__template:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
 .modal__template--active {
   border-color: var(--accent);
   background: var(--accent-soft);

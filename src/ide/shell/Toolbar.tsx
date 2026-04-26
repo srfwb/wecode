@@ -1,14 +1,17 @@
 import { LogoMark } from "../../components/LogoMark";
+import { useLessonContext } from "../../lessons/useLessonContext";
 import { useIdeStore } from "../../state/ideStore";
 
 export function Toolbar() {
   const setView = useIdeStore((s) => s.setView);
+  const lessonCtx = useLessonContext();
+  const handleBrandClick = lessonCtx ? () => lessonCtx.exitLesson() : () => setView("home");
   return (
     <header className="toolbar" role="banner">
       <button
         type="button"
         className="brand brand--link"
-        onClick={() => setView("home")}
+        onClick={handleBrandClick}
         aria-label="Retour à l'accueil"
       >
         <LogoMark size={20} />

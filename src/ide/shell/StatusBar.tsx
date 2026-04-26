@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { APP_VERSION } from "../../constants/version";
+import { useLessonContext } from "../../lessons/useLessonContext";
 import { useIdeStore } from "../../state/ideStore";
 import { bridgeEvents } from "../../tauri/bridge";
 import { persistenceEvents } from "../../vfs/persistence";
@@ -9,6 +10,7 @@ import { formatSavedAgo, languageLabel } from "./statusBarFormat";
 export function StatusBar() {
   const activeFile = useIdeStore((s) => s.activeFile);
   const cursor = useIdeStore((s) => s.editorCursor);
+  const lessonCtx = useLessonContext();
   const [lastSyncMs, setLastSyncMs] = useState<number | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [now, setNow] = useState<number>(() => Date.now());
@@ -72,7 +74,14 @@ export function StatusBar() {
           preview · {lastSyncMs} ms
         </span>
       )}
-      <span className="chip">{APP_VERSION}</span>
+      {lessonCtx ? (
+        <span className="chip accent">
+          {lessonCtx.checkpoints.filter((cp) => cp.status === "done").length} /{" "}
+          {lessonCtx.checkpoints.length} points
+        </span>
+      ) : (
+        <span className="chip">{APP_VERSION}</span>
+      )}
     </footer>
   );
 }

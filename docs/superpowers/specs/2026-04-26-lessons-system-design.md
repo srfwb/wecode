@@ -26,11 +26,11 @@ The Home rail gains clickable items that swap the main content zone:
 useHomeStore.tab: "accueil" | "lessons" | "challenges"
 ```
 
-| Rail item | Tab value | What the main zone shows |
-|-----------|-----------|--------------------------|
-| Accueil | `"accueil"` | Current home content (search, continue card, recent projects, templates) |
-| Leçons | `"lessons"` | Grid of all lessons with progress indicators |
-| Challenges | `"challenges"` | Grid of all challenges with completion status |
+| Rail item  | Tab value      | What the main zone shows                                                 |
+| ---------- | -------------- | ------------------------------------------------------------------------ |
+| Accueil    | `"accueil"`    | Current home content (search, continue card, recent projects, templates) |
+| Leçons     | `"lessons"`    | Grid of all lessons with progress indicators                             |
+| Challenges | `"challenges"` | Grid of all challenges with completion status                            |
 
 Items not yet wired (Projets, Cheatsheets, Settings) remain visible but disabled.
 
@@ -51,16 +51,17 @@ The context exposes:
 ```ts
 interface LessonContextValue {
   lesson: LessonData;
-  checkpoints: CheckpointState[];         // { id, status: "todo"|"active"|"done" }
+  checkpoints: CheckpointState[]; // { id, status: "todo"|"active"|"done" }
   currentStepIndex: number;
-  fileOpsLocked: boolean;                  // true for lessons, false for challenges
-  progress: number;                        // 0–1 ratio
+  fileOpsLocked: boolean; // true for lessons, false for challenges
+  progress: number; // 0–1 ratio
   validateNow: () => void;
   exitLesson: () => void;
 }
 ```
 
 Components that adapt their behavior in lesson mode:
+
 - **FileTree** — hides create/delete/rename buttons when `fileOpsLocked`
 - **Toolbar** — brand click calls `exitLesson()` instead of `setView("home")`
 - **LessonDock** — reads `lesson`, `checkpoints`, `currentStepIndex` from context
@@ -71,6 +72,7 @@ When the context is absent (free project mode), all components behave as today.
 ### Stores
 
 **`useLessonStore`** (new Zustand store):
+
 - `activeLessonId: string | null`
 - `checkpointStates: Record<string, CheckpointStatus>`
 - `startLesson(id): void` — hydrates VFS with starter files, sets view to `"lesson"`
@@ -78,15 +80,17 @@ When the context is absent (free project mode), all components behave as today.
 - `resetLesson(id): void`
 
 **`useHomeStore`** (new Zustand store):
+
 - `tab: "accueil" | "lessons" | "challenges"`
 - `setTab(tab): void`
 
 **Global progression** — persisted via `tauri-plugin-store` as `wecode.progress.json`:
+
 ```ts
 interface ProgressStore {
   version: 1;
-  completed: Record<string, { completedAt: number }>;  // lessonId → timestamp
-  checkpoints: Record<string, string[]>;                 // lessonId → completed checkpoint ids
+  completed: Record<string, { completedAt: number }>; // lessonId → timestamp
+  checkpoints: Record<string, string[]>; // lessonId → completed checkpoint ids
 }
 ```
 
@@ -103,8 +107,8 @@ interface LessonData {
   difficulty: "débutant" | "intermédiaire" | "avancé";
   estimatedMinutes: number;
   tags: string[];
-  allowFileOps: boolean;            // false for lessons, true for challenges
-  starterFiles: Record<string, string>;  // VFS path → content
+  allowFileOps: boolean; // false for lessons, true for challenges
+  starterFiles: Record<string, string>; // VFS path → content
   steps: LessonStep[];
 }
 
@@ -116,7 +120,7 @@ interface LessonStep {
 
 interface LessonParagraph {
   kind: "text" | "code";
-  content: string;                  // text may contain `backtick` for inline code
+  content: string; // text may contain `backtick` for inline code
 }
 
 interface CheckpointDef {
@@ -130,24 +134,24 @@ interface CheckpointDef {
 
 ### Rule types
 
-| Type | Fields | What it checks |
-|------|--------|----------------|
-| `element-exists` | `selector`, `file` | `querySelector(selector)` returns ≥1 match |
-| `element-count` | `selector`, `file`, `min?`, `max?` | Match count within range |
-| `element-text` | `selector`, `file`, `text`, `match` | Element text content matches (`contains`, `exact`, `regex`, `not-empty`) |
-| `attribute-exists` | `selector`, `file`, `attribute` | Element has the attribute |
-| `attribute-value` | `selector`, `file`, `attribute`, `value?`, `match` | Attribute value check |
-| `attribute-count` | `selector`, `file`, `minAttributes` | Element has ≥N attributes |
-| `css-property` | `selector`, `file`, `property`, `match` | CSS property exists on selector |
-| `css-property-value` | `selector`, `file`, `property`, `value`, `match` | CSS property value check (`exact`, `contains`, `gte`, `lte`) |
-| `file-contains` | `file`, `text` | Raw source contains string |
-| `file-not-contains` | `file`, `text` | Raw source does NOT contain string |
-| `file-regex` | `file`, `pattern` | Raw source matches regex |
-| `nesting` | `parent`, `child`, `direct?`, `file` | Child is descendant (or direct child) of parent |
-| `element-order` | `selectors[]`, `within`, `file` | Elements appear in document order |
-| `sibling` | `first`, `then`, `file` | Two elements are adjacent siblings |
-| `indent-style` | `file`, `style` (`spaces`\|`tabs`), `size?` | Source follows indentation convention |
-| `composite` | `operator` (`and`\|`or`), `rules[]` | Combines multiple rules |
+| Type                 | Fields                                             | What it checks                                                           |
+| -------------------- | -------------------------------------------------- | ------------------------------------------------------------------------ |
+| `element-exists`     | `selector`, `file`                                 | `querySelector(selector)` returns ≥1 match                               |
+| `element-count`      | `selector`, `file`, `min?`, `max?`                 | Match count within range                                                 |
+| `element-text`       | `selector`, `file`, `text`, `match`                | Element text content matches (`contains`, `exact`, `regex`, `not-empty`) |
+| `attribute-exists`   | `selector`, `file`, `attribute`                    | Element has the attribute                                                |
+| `attribute-value`    | `selector`, `file`, `attribute`, `value?`, `match` | Attribute value check                                                    |
+| `attribute-count`    | `selector`, `file`, `minAttributes`                | Element has ≥N attributes                                                |
+| `css-property`       | `selector`, `file`, `property`, `match`            | CSS property exists on selector                                          |
+| `css-property-value` | `selector`, `file`, `property`, `value`, `match`   | CSS property value check (`exact`, `contains`, `gte`, `lte`)             |
+| `file-contains`      | `file`, `text`                                     | Raw source contains string                                               |
+| `file-not-contains`  | `file`, `text`                                     | Raw source does NOT contain string                                       |
+| `file-regex`         | `file`, `pattern`                                  | Raw source matches regex                                                 |
+| `nesting`            | `parent`, `child`, `direct?`, `file`               | Child is descendant (or direct child) of parent                          |
+| `element-order`      | `selectors[]`, `within`, `file`                    | Elements appear in document order                                        |
+| `sibling`            | `first`, `then`, `file`                            | Two elements are adjacent siblings                                       |
+| `indent-style`       | `file`, `style` (`spaces`\|`tabs`), `size?`        | Source follows indentation convention                                    |
+| `composite`          | `operator` (`and`\|`or`), `rules[]`                | Combines multiple rules                                                  |
 
 ### Match modes
 
@@ -163,6 +167,7 @@ interface CheckpointDef {
 ### Module location
 
 `src/lessons/validation/` — pure functions, no React, testable under Node:
+
 - `validate.ts` — orchestrator
 - `rules/` — one file per rule type
 
@@ -186,11 +191,11 @@ Reproduces the Claude Design handoff exactly (CSS from `WeCode IDE.html:504–61
 
 ### Checkpoint states
 
-| Class | Tick | Label | Meta |
-|-------|------|-------|------|
-| `.cp` (todo) | Empty circle, `--line` border | Normal text | `—` |
-| `.cp.active` | Circle, `--accent` border, ambre bg | Normal text | `vérification…` (ambre) |
-| `.cp.done` | Filled `--accent`, checkmark in `--bg-0` | Strikethrough, muted | `fait` |
+| Class        | Tick                                     | Label                | Meta                    |
+| ------------ | ---------------------------------------- | -------------------- | ----------------------- |
+| `.cp` (todo) | Empty circle, `--line` border            | Normal text          | `—`                     |
+| `.cp.active` | Circle, `--accent` border, ambre bg      | Normal text          | `vérification…` (ambre) |
+| `.cp.done`   | Filled `--accent`, checkmark in `--bg-0` | Strikethrough, muted | `fait`                  |
 
 ### Visibility
 
@@ -202,6 +207,7 @@ Reproduces the Claude Design handoff exactly (CSS from `WeCode IDE.html:504–61
 ### Lessons list (`tab === "lessons"`)
 
 Grid of lesson cards. Each card shows:
+
 - Status badge: `✓ terminé` (green), `● en cours` (ambre), `pas commencé` (muted)
 - Estimated time
 - Title with lesson number
@@ -213,6 +219,7 @@ Clicking a card calls `startLesson(id)` → hydrates VFS, switches to `view: "le
 ### Challenges list (`tab === "challenges"`)
 
 Same card layout, adapted for challenges:
+
 - Status: `✓ réussi` or `pas tenté`
 - No progress bar (challenges are pass/fail)
 - Clicking starts the challenge
@@ -289,6 +296,7 @@ cargo check --manifest-path src-tauri/Cargo.toml
 ```
 
 Manual:
+
 1. Home → rail → click Leçons → grid of lessons appears
 2. Click lesson → IDE opens with starter files, dock shows instructions
 3. Follow checkpoints → validation runs on each save, checkpoints animate to "done"

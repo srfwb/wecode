@@ -15,6 +15,7 @@
 ### Task 1: Validation types
 
 **Files:**
+
 - Create: `src/lessons/validation/types.ts`
 - Test: `src/lessons/validation/types.test.ts`
 
@@ -115,6 +116,7 @@ git commit -m "feat(lessons): add validation rule type definitions"
 ### Task 2: Core validation rules (element-exists, file-contains, css-property)
 
 **Files:**
+
 - Create: `src/lessons/validation/rules/elementExists.ts`
 - Create: `src/lessons/validation/rules/fileContains.ts`
 - Create: `src/lessons/validation/rules/cssProperty.ts`
@@ -143,83 +145,174 @@ const FILES: Record<string, string> = { "/index.html": HTML, "/style.css": CSS }
 
 describe("elementExists", () => {
   test("passes when selector matches", () => {
-    expect(checkElementExists({ type: "element-exists", selector: "h1", file: "/index.html" }, FILES)).toBe(true);
+    expect(
+      checkElementExists({ type: "element-exists", selector: "h1", file: "/index.html" }, FILES),
+    ).toBe(true);
   });
   test("fails when selector does not match", () => {
-    expect(checkElementExists({ type: "element-exists", selector: "h2", file: "/index.html" }, FILES)).toBe(false);
+    expect(
+      checkElementExists({ type: "element-exists", selector: "h2", file: "/index.html" }, FILES),
+    ).toBe(false);
   });
   test("fails when file is missing", () => {
-    expect(checkElementExists({ type: "element-exists", selector: "h1", file: "/missing.html" }, FILES)).toBe(false);
+    expect(
+      checkElementExists({ type: "element-exists", selector: "h1", file: "/missing.html" }, FILES),
+    ).toBe(false);
   });
 });
 
 describe("fileContains", () => {
   test("passes when text is present", () => {
-    expect(checkFileContains({ type: "file-contains", file: "/style.css", text: "background-color" }, FILES)).toBe(true);
+    expect(
+      checkFileContains(
+        { type: "file-contains", file: "/style.css", text: "background-color" },
+        FILES,
+      ),
+    ).toBe(true);
   });
   test("fails when text is absent", () => {
-    expect(checkFileContains({ type: "file-contains", file: "/style.css", text: "display: flex" }, FILES)).toBe(false);
+    expect(
+      checkFileContains(
+        { type: "file-contains", file: "/style.css", text: "display: flex" },
+        FILES,
+      ),
+    ).toBe(false);
   });
 });
 
 describe("fileNotContains", () => {
   test("passes when text is absent", () => {
-    expect(checkFileNotContains({ type: "file-not-contains", file: "/index.html", text: "<br><br>" }, FILES)).toBe(true);
+    expect(
+      checkFileNotContains(
+        { type: "file-not-contains", file: "/index.html", text: "<br><br>" },
+        FILES,
+      ),
+    ).toBe(true);
   });
   test("fails when text is present", () => {
-    expect(checkFileNotContains({ type: "file-not-contains", file: "/index.html", text: "<h1" }, FILES)).toBe(false);
+    expect(
+      checkFileNotContains({ type: "file-not-contains", file: "/index.html", text: "<h1" }, FILES),
+    ).toBe(false);
   });
 });
 
 describe("cssProperty", () => {
   test("passes when selector has the property", () => {
-    expect(checkCssProperty({ type: "css-property", selector: "body", file: "/style.css", property: "background-color", match: "exists" }, FILES)).toBe(true);
+    expect(
+      checkCssProperty(
+        {
+          type: "css-property",
+          selector: "body",
+          file: "/style.css",
+          property: "background-color",
+          match: "exists",
+        },
+        FILES,
+      ),
+    ).toBe(true);
   });
   test("fails when property is missing", () => {
-    expect(checkCssProperty({ type: "css-property", selector: "body", file: "/style.css", property: "display", match: "exists" }, FILES)).toBe(false);
+    expect(
+      checkCssProperty(
+        {
+          type: "css-property",
+          selector: "body",
+          file: "/style.css",
+          property: "display",
+          match: "exists",
+        },
+        FILES,
+      ),
+    ).toBe(false);
   });
   test("fails when selector is missing", () => {
-    expect(checkCssProperty({ type: "css-property", selector: ".missing", file: "/style.css", property: "color", match: "exists" }, FILES)).toBe(false);
+    expect(
+      checkCssProperty(
+        {
+          type: "css-property",
+          selector: ".missing",
+          file: "/style.css",
+          property: "color",
+          match: "exists",
+        },
+        FILES,
+      ),
+    ).toBe(false);
   });
 });
 
 describe("nesting", () => {
   test("passes when child is inside parent", () => {
-    expect(checkNesting({ type: "nesting", parent: "body", child: "h1", file: "/index.html" }, FILES)).toBe(true);
+    expect(
+      checkNesting({ type: "nesting", parent: "body", child: "h1", file: "/index.html" }, FILES),
+    ).toBe(true);
   });
   test("fails when child is not inside parent", () => {
-    expect(checkNesting({ type: "nesting", parent: "h1", child: "p", file: "/index.html" }, FILES)).toBe(false);
+    expect(
+      checkNesting({ type: "nesting", parent: "h1", child: "p", file: "/index.html" }, FILES),
+    ).toBe(false);
   });
   test("direct child check", () => {
-    expect(checkNesting({ type: "nesting", parent: "body", child: "h1", direct: true, file: "/index.html" }, FILES)).toBe(true);
-    expect(checkNesting({ type: "nesting", parent: "html", child: "h1", direct: true, file: "/index.html" }, FILES)).toBe(false);
+    expect(
+      checkNesting(
+        { type: "nesting", parent: "body", child: "h1", direct: true, file: "/index.html" },
+        FILES,
+      ),
+    ).toBe(true);
+    expect(
+      checkNesting(
+        { type: "nesting", parent: "html", child: "h1", direct: true, file: "/index.html" },
+        FILES,
+      ),
+    ).toBe(false);
   });
 });
 
 describe("composite", () => {
   test("AND passes when all sub-rules pass", () => {
-    expect(checkComposite({
-      type: "composite", operator: "and", rules: [
-        { type: "element-exists", selector: "h1", file: "/index.html" },
-        { type: "file-contains", file: "/style.css", text: "body" },
-      ]
-    }, FILES)).toBe(true);
+    expect(
+      checkComposite(
+        {
+          type: "composite",
+          operator: "and",
+          rules: [
+            { type: "element-exists", selector: "h1", file: "/index.html" },
+            { type: "file-contains", file: "/style.css", text: "body" },
+          ],
+        },
+        FILES,
+      ),
+    ).toBe(true);
   });
   test("AND fails when one sub-rule fails", () => {
-    expect(checkComposite({
-      type: "composite", operator: "and", rules: [
-        { type: "element-exists", selector: "h1", file: "/index.html" },
-        { type: "element-exists", selector: "h99", file: "/index.html" },
-      ]
-    }, FILES)).toBe(false);
+    expect(
+      checkComposite(
+        {
+          type: "composite",
+          operator: "and",
+          rules: [
+            { type: "element-exists", selector: "h1", file: "/index.html" },
+            { type: "element-exists", selector: "h99", file: "/index.html" },
+          ],
+        },
+        FILES,
+      ),
+    ).toBe(false);
   });
   test("OR passes when any sub-rule passes", () => {
-    expect(checkComposite({
-      type: "composite", operator: "or", rules: [
-        { type: "element-exists", selector: "h99", file: "/index.html" },
-        { type: "element-exists", selector: "h1", file: "/index.html" },
-      ]
-    }, FILES)).toBe(true);
+    expect(
+      checkComposite(
+        {
+          type: "composite",
+          operator: "or",
+          rules: [
+            { type: "element-exists", selector: "h99", file: "/index.html" },
+            { type: "element-exists", selector: "h1", file: "/index.html" },
+          ],
+        },
+        FILES,
+      ),
+    ).toBe(true);
   });
 });
 ```
@@ -234,6 +327,7 @@ Expected: FAIL (modules not found).
 Each rule function follows: parse HTML/CSS from files map, apply the check, return boolean.
 
 `elementExists.ts`:
+
 ```ts
 export function checkElementExists(
   rule: { type: "element-exists"; selector: string; file: string },
@@ -247,6 +341,7 @@ export function checkElementExists(
 ```
 
 `fileContains.ts`:
+
 ```ts
 export function checkFileContains(
   rule: { type: "file-contains"; file: string; text: string },
@@ -268,6 +363,7 @@ export function checkFileNotContains(
 ```
 
 `cssProperty.ts` — parses CSS text to find selector + property:
+
 ```ts
 const RULE_RE = /([^{}]+)\{([^}]*)\}/g;
 
@@ -297,6 +393,7 @@ export function checkCssProperty(
 ```
 
 `nesting.ts`:
+
 ```ts
 export function checkNesting(
   rule: { type: "nesting"; parent: string; child: string; direct?: boolean; file: string },
@@ -305,14 +402,13 @@ export function checkNesting(
   const html = files[rule.file];
   if (html === undefined) return false;
   const doc = new DOMParser().parseFromString(html, "text/html");
-  const selector = rule.direct
-    ? `${rule.parent} > ${rule.child}`
-    : `${rule.parent} ${rule.child}`;
+  const selector = rule.direct ? `${rule.parent} > ${rule.child}` : `${rule.parent} ${rule.child}`;
   return doc.querySelector(selector) !== null;
 }
 ```
 
 `composite.ts` — imports all other rules and delegates:
+
 ```ts
 import type { ValidationRule } from "../types";
 import { checkElementExists } from "./elementExists";
@@ -322,13 +418,20 @@ import { checkNesting } from "./nesting";
 
 export function evaluateRule(rule: ValidationRule, files: Record<string, string>): boolean {
   switch (rule.type) {
-    case "element-exists": return checkElementExists(rule, files);
-    case "file-contains": return checkFileContains(rule, files);
-    case "file-not-contains": return checkFileNotContains(rule, files);
-    case "css-property": return checkCssProperty(rule, files);
-    case "nesting": return checkNesting(rule, files);
-    case "composite": return checkComposite(rule, files);
-    default: return false;
+    case "element-exists":
+      return checkElementExists(rule, files);
+    case "file-contains":
+      return checkFileContains(rule, files);
+    case "file-not-contains":
+      return checkFileNotContains(rule, files);
+    case "css-property":
+      return checkCssProperty(rule, files);
+    case "nesting":
+      return checkNesting(rule, files);
+    case "composite":
+      return checkComposite(rule, files);
+    default:
+      return false;
   }
 }
 
@@ -358,6 +461,7 @@ git commit -m "feat(validation): implement core rule checkers with tests"
 ### Task 3: Validation orchestrator
 
 **Files:**
+
 - Create: `src/lessons/validation/validate.ts`
 - Test: `src/lessons/validation/validate.test.ts`
 
@@ -376,9 +480,27 @@ const FILES = {
 };
 
 const CHECKPOINTS = [
-  { id: "has-head", label: "Add head", rule: { type: "element-exists" as const, selector: "head", file: "/index.html" } },
-  { id: "has-h2", label: "Add h2", rule: { type: "element-exists" as const, selector: "h2", file: "/index.html" } },
-  { id: "has-color", label: "Set color", rule: { type: "css-property" as const, selector: "body", file: "/style.css", property: "color", match: "exists" as const } },
+  {
+    id: "has-head",
+    label: "Add head",
+    rule: { type: "element-exists" as const, selector: "head", file: "/index.html" },
+  },
+  {
+    id: "has-h2",
+    label: "Add h2",
+    rule: { type: "element-exists" as const, selector: "h2", file: "/index.html" },
+  },
+  {
+    id: "has-color",
+    label: "Set color",
+    rule: {
+      type: "css-property" as const,
+      selector: "body",
+      file: "/style.css",
+      property: "color",
+      match: "exists" as const,
+    },
+  },
 ];
 
 describe("validateCheckpoints", () => {
@@ -430,6 +552,7 @@ git commit -m "feat(validation): add checkpoint validation orchestrator"
 ### Task 4: Lesson data types, JSON content, and registry
 
 **Files:**
+
 - Create: `src/lessons/types.ts`
 - Create: `src/lessons/data/html-01-structure.json`
 - Create: `src/lessons/data/challenge-01-simple-page.json`
@@ -516,6 +639,7 @@ git commit -m "feat(lessons): add data types, first lesson and challenge content
 ### Task 5: Lesson store + progress persistence
 
 **Files:**
+
 - Create: `src/lessons/lessonStore.ts`
 - Create: `src/lessons/progressPersistence.ts`
 - Test: `src/lessons/lessonStore.test.ts`
@@ -544,6 +668,7 @@ git commit -m "feat(lessons): add lesson store and progress persistence"
 ### Task 6: Home store + rail routing
 
 **Files:**
+
 - Create: `src/home/homeStore.ts`
 - Modify: `src/home/rail/HomeNav.tsx`
 - Modify: `src/home/HomeShell.tsx`
@@ -592,6 +717,7 @@ git commit -m "feat(home): add rail tab routing for lessons and challenges"
 ### Task 7: Lessons & Challenges list views
 
 **Files:**
+
 - Create: `src/home/sections/LessonCard.tsx`
 - Create: `src/home/sections/LessonsListView.tsx`
 - Create: `src/home/sections/ChallengesListView.tsx`
@@ -624,6 +750,7 @@ git commit -m "feat(home): add lessons and challenges list views with cards"
 ### Task 8: LessonProvider context
 
 **Files:**
+
 - Create: `src/lessons/LessonProvider.tsx`
 - Create: `src/lessons/useLessonContext.ts`
 
@@ -657,6 +784,7 @@ git commit -m "feat(lessons): add LessonProvider context with validation wiring"
 ### Task 9: Dock UI rewrite
 
 **Files:**
+
 - Modify: `src/ide/dock/LessonDock.tsx`
 - Modify: `src/styles/global.css`
 
@@ -684,6 +812,7 @@ git commit -m "feat(dock): rewrite lesson dock to use context and match design"
 ### Task 10: IDE shell adaptations
 
 **Files:**
+
 - Modify: `src/ide/tree/FileTree.tsx`
 - Modify: `src/ide/shell/Toolbar.tsx`
 - Modify: `src/ide/shell/StatusBar.tsx`
@@ -709,13 +838,17 @@ Read `useLessonContext()`. If context exists, replace the version chip with a ch
 - [ ] **Step 5: App.tsx — render LessonProvider when view is "lesson"**
 
 ```tsx
-{view === "lesson" ? (
-  <LessonProvider><IdeShell key="lesson" /></LessonProvider>
-) : view === "home" ? (
-  <HomeShell key="home" />
-) : (
-  <IdeShell key="ide" />
-)}
+{
+  view === "lesson" ? (
+    <LessonProvider>
+      <IdeShell key="lesson" />
+    </LessonProvider>
+  ) : view === "home" ? (
+    <HomeShell key="home" />
+  ) : (
+    <IdeShell key="ide" />
+  );
+}
 ```
 
 - [ ] **Step 6: Commit**
@@ -730,6 +863,7 @@ git commit -m "feat(ide): adapt shell components for lesson mode via context"
 ### Task 11: Continue card adaptation
 
 **Files:**
+
 - Modify: `src/home/sections/ContinueSection.tsx`
 
 - [ ] **Step 1: Read lesson progress alongside project data**
@@ -766,6 +900,7 @@ cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 - [ ] **Step 2: Manual smoke test**
 
 Following the spec verification checklist:
+
 1. Home → rail → click Leçons → grid appears
 2. Click lesson card → IDE opens with starter files, dock shows instructions
 3. Edit code to pass checkpoints → validation runs, checkpoints animate to "done"

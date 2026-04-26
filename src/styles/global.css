@@ -1099,7 +1099,7 @@ button.brand {
 }
 
 /* ============================================================
-   Lesson dock (UI shell — mocked content until the lesson engine lands)
+   Lesson dock
    ============================================================ */
 
 .dock {
@@ -1107,11 +1107,11 @@ button.brand {
   border-top: 1px solid var(--line-soft);
   display: flex;
   flex-direction: column;
+  min-height: 0;
   max-height: 44vh;
-  transition: max-height 0.2s ease;
-  overflow: hidden;
+  transition: max-height 0.2s;
 }
-.dock--collapsed {
+.dock.collapsed {
   max-height: 40px;
 }
 
@@ -1121,23 +1121,15 @@ button.brand {
   gap: 10px;
   height: 40px;
   padding: 0 14px;
-  width: 100%;
-  color: var(--fg-0);
-  font: inherit;
-  text-align: left;
-  flex: none;
   cursor: pointer;
-  background: transparent;
-  border: 0;
-}
-.dock-head:hover {
-  background: var(--bg-1);
+  flex: none;
 }
 .dock-head .chev {
   color: var(--fg-3);
-  transition: transform 0.15s ease;
+  transition: transform 0.15s;
+  font-size: 0.85em;
 }
-.dock--collapsed .dock-head .chev {
+.dock.collapsed .dock-head .chev {
   transform: rotate(-90deg);
 }
 
@@ -1166,10 +1158,10 @@ button.brand {
 }
 
 .progress {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
   color: var(--fg-2);
   font-size: 0.88em;
 }
@@ -1189,7 +1181,7 @@ button.brand {
 .dock-body {
   padding: 4px 14px 14px;
   overflow-y: auto;
-  flex: 1 1 auto;
+  flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -1201,7 +1193,6 @@ button.brand {
   font-size: 1.1em;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--fg-0);
 }
 .lesson-text p {
   margin: 0 0 10px;
@@ -1262,22 +1253,22 @@ button.brand {
   font-size: 0.75em;
   flex: none;
 }
-.cp--done .tick {
+.cp.done .tick {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--bg-0);
 }
-.cp--active {
+.cp.active {
   background: var(--accent-soft);
   border-color: var(--accent-dim);
 }
-.cp--active .tick {
+.cp.active .tick {
   border-color: var(--accent);
 }
 .cp .label {
   color: var(--fg-0);
 }
-.cp--done .label {
+.cp.done .label {
   color: var(--fg-2);
   text-decoration: line-through;
   text-decoration-color: var(--fg-3);
@@ -1287,7 +1278,7 @@ button.brand {
   font-size: 0.78em;
   color: var(--fg-3);
 }
-.cp .meta--live {
+.cp .meta.live {
   color: var(--accent);
 }
 

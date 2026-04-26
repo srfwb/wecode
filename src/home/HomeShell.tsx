@@ -2,9 +2,11 @@ import { ProjectModalsHost } from "../projects/ui/ProjectModalsHost";
 import { useHomeStore } from "./homeStore";
 import { HomeRail } from "./rail/HomeRail";
 import { BottomTip } from "./sections/BottomTip";
+import { ChallengesListView } from "./sections/ChallengesListView";
 import { ContinueSection } from "./sections/ContinueSection";
 import { HomeSearch } from "./sections/HomeSearch";
 import { LessonPathSection } from "./sections/LessonPathSection";
+import { LessonsListView } from "./sections/LessonsListView";
 import { RecentProjectsSection } from "./sections/RecentProjectsSection";
 import { TemplatesSection } from "./sections/TemplatesSection";
 
@@ -25,10 +27,8 @@ export function HomeShell() {
             <BottomTip />
           </>
         )}
-        {tab === "lessons" && <div className="home-section">Leçons — à venir dans Task 7</div>}
-        {tab === "challenges" && (
-          <div className="home-section">Challenges — à venir dans Task 7</div>
-        )}
+        {tab === "lessons" && <LessonsListView />}
+        {tab === "challenges" && <ChallengesListView />}
       </main>
       <ProjectModalsHost />
     </div>

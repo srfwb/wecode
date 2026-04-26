@@ -1927,6 +1927,99 @@ button.brand {
   opacity: 1;
 }
 
+/* Lesson & Challenge cards */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lesson-card {
+  text-align: left;
+  padding: 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    border-color 0.12s,
+    background 0.12s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+.lesson-card:hover {
+  border-color: var(--line);
+  background: var(--bg-2);
+}
+.lesson-card:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.lesson-card--in-progress {
+  border-color: oklch(0.55 0.09 75 / 0.5);
+}
+
+.lesson-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesson-card__badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.lesson-card__badge--done {
+  background: oklch(0.35 0.1 155 / 0.35);
+  color: var(--ok);
+}
+.lesson-card__badge--active {
+  background: oklch(0.35 0.1 75 / 0.35);
+  color: var(--accent);
+}
+.lesson-card__badge--todo {
+  color: var(--fg-3);
+}
+
+.lesson-card__time {
+  color: var(--fg-3);
+  font-size: 11px;
+}
+
+.lesson-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg-0);
+}
+
+.lesson-card__desc {
+  font-size: 12px;
+  color: var(--fg-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lesson-card__progress {
+  height: 3px;
+  background: var(--line-soft);
+  border-radius: 2px;
+  margin-top: 4px;
+}
+.lesson-card__progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
 /* View transition — Home ↔ IDE */
 @keyframes view-in {
   from {

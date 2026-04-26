@@ -14,7 +14,7 @@ export interface EditorCursor {
  */
 export type PreviewDevice = "mobile" | "desktop";
 
-export type View = "home" | "ide";
+export type View = "home" | "ide" | "lesson";
 
 interface IdeState {
   openFiles: string[];
@@ -94,7 +94,7 @@ export const useIdeStore = create<IdeState>((set) => ({
       const active = activeFile && cleaned.includes(activeFile) ? activeFile : (cleaned[0] ?? null);
       const next: Partial<IdeState> = { openFiles: cleaned, activeFile: active };
       if (typeof dockCollapsed === "boolean") next.dockCollapsed = dockCollapsed;
-      if (view === "ide" || view === "home") next.view = view;
+      if (view === "ide" || view === "home" || view === "lesson") next.view = view;
       return next;
     }),
 }));

@@ -5,9 +5,10 @@ interface Props {
   label: string;
   active?: boolean;
   onClick?: () => void;
+  counter?: string;
 }
 
-export function HomeNavItem({ icon, label, active = false, onClick }: Props) {
+export function HomeNavItem({ icon, label, active = false, onClick, counter }: Props) {
   return (
     <button
       type="button"
@@ -17,6 +18,7 @@ export function HomeNavItem({ icon, label, active = false, onClick }: Props) {
     >
       {icon}
       <span>{label}</span>
+      {counter !== undefined && <span className="home-nav-item__counter">{counter}</span>}
     </button>
   );
 }

@@ -5,6 +5,41 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] — 2026-04-27
+
+Milestone 3: structured learning system with guided lessons and free-form
+challenges. Reuses the existing IDE shell via a React context provider.
+
+### Added
+
+- Lesson system: guided step-by-step lessons with real-time checkpoint validation against user code (DOM/CSS rule checking via DOMParser, 300 ms debounce).
+- Challenge system: free-form coding challenges with pass/fail checkpoints and file operations enabled.
+- Home rail routing: Accueil / Leçons / Challenges tabs swap the main content zone. Progress counter on Leçons shows completed / total.
+- Lesson dock: collapsible bottom panel with instructions, inline code formatting, and animated checkpoint rows (todo → active → done).
+- LessonProvider context: wraps IdeShell in lesson mode, wires VFS changes to the validation engine, persists completion via `tauri-plugin-store`.
+- Validation engine: 16 rule types defined (6 implemented: element-exists, file-contains, file-not-contains, css-property, nesting, composite). Unimplemented types warn at runtime.
+- First lesson: "La structure d'une page HTML" (5 checkpoints: head, body, title, h1, p).
+- First challenge: "Crée une page simple" (3 checkpoints: h1, p, background-color).
+- Continue card shows in-progress lessons with priority over projects.
+- In-app changelog modal opened from the Home rail footer ("Nouveautés de la vX.Y.Z").
+
+### Changed
+
+- Home rail nav items are now semantic `<button>` elements with hover, focus, and disabled states.
+- IDE shortcuts (Ctrl+Tab, Ctrl+W) work in lesson view. Ctrl+N is blocked when file ops are locked.
+- Dock header is a `<button>` with `aria-expanded` instead of a `<div>`.
+- StatusBar shows checkpoint progress instead of version number in lesson mode.
+- FileTree hides create/delete/rename in lesson mode; context menu shows only "Ouvrir".
+
+### Fixed
+
+- Dock collapse now works correctly (`overflow: hidden` restored).
+- CSS `rule.property` is regex-escaped before interpolation into `new RegExp()`.
+- Template selector buttons no longer show a parasitic amber focus ring on click.
+- `ContinueLessonCard` displays "Challenge" instead of "Leçon" for challenge type.
+- Regex `/g` flag statefulness bug in CSS property checker (lastIndex persisted across calls).
+- `startLesson` calls `syncVfsNow` so the preview iframe loads starter files immediately.
+
 ## [0.2.0-2] — 2026-04-23
 
 Pre-release. Security hardening, accessibility baseline, transactional project

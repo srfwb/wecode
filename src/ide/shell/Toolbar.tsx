@@ -12,19 +12,19 @@ export function Toolbar() {
         type="button"
         className="brand brand--link"
         onClick={handleBrandClick}
-        aria-label="Retour à l'accueil"
+        aria-label="Back to home"
       >
         <LogoMark size={20} />
         <span>WeCode</span>
       </button>
 
       <div className="toolbar-center">
-        <div className="cmd-search" role="search" aria-label="Rechercher">
+        <div className="cmd-search" role="search" aria-label="Search">
           <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" />
           </svg>
-          <span>Rechercher fichiers, commandes…</span>
+          <span>Search files, commands…</span>
           <span className="kbd">Ctrl K</span>
         </div>
       </div>
@@ -33,8 +33,8 @@ export function Toolbar() {
         <button
           type="button"
           className="t-btn t-btn--disabled"
-          title="Annuler — bientôt disponible"
-          aria-label="Annuler — bientôt disponible"
+          title="Undo — coming soon"
+          aria-label="Undo — coming soon"
           disabled
         >
           <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
@@ -45,8 +45,8 @@ export function Toolbar() {
         <button
           type="button"
           className="t-btn t-btn--disabled"
-          title="Formater — bientôt disponible"
-          aria-label="Formater — bientôt disponible"
+          title="Format — coming soon"
+          aria-label="Format — coming soon"
           disabled
         >
           <svg className="i" viewBox="0 0 24 24" aria-hidden="true">

@@ -16,8 +16,8 @@ export function PreviewBar({ onRefresh, path }: PreviewBarProps) {
         type="button"
         className="t-btn"
         onClick={onRefresh}
-        title="Recharger l'aperçu"
-        aria-label="Recharger l'aperçu"
+        title="Reload preview"
+        aria-label="Reload preview"
       >
         <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M3 12a9 9 0 0 1 15.5-6.3L21 8" />
@@ -27,7 +27,7 @@ export function PreviewBar({ onRefresh, path }: PreviewBarProps) {
         </svg>
       </button>
 
-      <div className="prev-url" aria-label="Adresse de l'aperçu">
+      <div className="prev-url" aria-label="Preview address">
         <span className="dot-g" aria-hidden="true" />
         <span>localhost</span>
         <span className="path">{path}</span>
@@ -37,7 +37,7 @@ export function PreviewBar({ onRefresh, path }: PreviewBarProps) {
         </span>
       </div>
 
-      <div className="device-switch" role="group" aria-label="Taille d'aperçu">
+      <div className="device-switch" role="group" aria-label="Preview size">
         {DEVICE_ORDER.map((d) => (
           <button
             key={d}

@@ -33,11 +33,11 @@ export function LessonDock() {
         </svg>
         <span className="lesson-chip">
           <span className="num">{currentStepIndex + 1}</span>
-          {lesson.type === "lesson" ? "Leçon" : "Challenge"} · {step.heading}
+          {lesson.type === "lesson" ? "Lesson" : "Challenge"} · {step.heading}
         </span>
         <div className="progress">
           <span>
-            {doneCount} / {totalCount} points
+            {doneCount} / {totalCount} pts
           </span>
           <ProgressRing value={progress} />
         </div>
@@ -53,7 +53,7 @@ export function LessonDock() {
               <circle cx="12" cy="12" r="9" />
               <path d="M12 8v4M12 16h.01" />
             </svg>
-            Survole un mot-clé dans l&apos;éditeur pour une explication rapide.
+            Hover a keyword in the editor for a quick explanation.
           </p>
         </div>
         <div className="checkpoints">
@@ -101,7 +101,7 @@ function CheckpointRow({
 }) {
   const cls = `cp${status === "done" ? " done" : status === "active" ? " active" : ""}`;
   const metaCls = `meta${status === "active" ? " live" : ""}`;
-  const metaText = status === "done" ? "fait" : status === "active" ? "vérification…" : "—";
+  const metaText = status === "done" ? "done" : status === "active" ? "checking…" : "—";
 
   return (
     <div className={cls}>

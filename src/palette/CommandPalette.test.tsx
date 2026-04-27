@@ -44,7 +44,7 @@ describe("CommandPalette", () => {
   test("renders the dialog with the input focused when opened on home", () => {
     usePaletteStore.setState({ open: true });
     render(<CommandPalette />);
-    const input = screen.getByRole("textbox", { name: /rechercher/i });
+    const input = screen.getByRole("textbox", { name: /search/i });
     expect(input).toBeTruthy();
     expect(document.activeElement).toBe(input);
   });
@@ -52,15 +52,15 @@ describe("CommandPalette", () => {
   test("typing filters the visible items", () => {
     usePaletteStore.setState({ open: true });
     const { container } = render(<CommandPalette />);
-    const input = screen.getByRole("textbox", { name: /rechercher/i }) as HTMLInputElement;
-    // "Nouveau projet" is a command title; typing "nouv" should keep it.
+    const input = screen.getByRole("textbox", { name: /search/i }) as HTMLInputElement;
+    // "New project" is a command title; typing "new" should keep it.
     // The row renders with `<mark>` around the matched substring, so the
     // title is split across text nodes — use the aggregated textContent.
-    fireEvent.change(input, { target: { value: "nouv" } });
-    expect(container.textContent).toContain("Nouveau projet");
+    fireEvent.change(input, { target: { value: "new" } });
+    expect(container.textContent).toContain("New project");
     // Typing a query that matches nothing should hit the empty-state copy.
     fireEvent.change(input, { target: { value: "xyzzy" } });
-    expect(container.textContent).toContain("Aucun résultat");
+    expect(container.textContent).toContain("No results");
   });
 
   test("Enter invokes the selected command and closes the palette", () => {
@@ -71,9 +71,9 @@ describe("CommandPalette", () => {
       openDelete: () => {},
       closeAll: () => {},
     } as unknown as ReturnType<typeof useProjectModalStore.getState>);
-    usePaletteStore.setState({ open: true, query: "nouv" });
+    usePaletteStore.setState({ open: true, query: "new" });
     render(<CommandPalette />);
-    const input = screen.getByRole("textbox", { name: /rechercher/i }) as HTMLInputElement;
+    const input = screen.getByRole("textbox", { name: /search/i }) as HTMLInputElement;
     act(() => {
       fireEvent.keyDown(input, { key: "Enter" });
     });
@@ -91,8 +91,8 @@ describe("CommandPalette", () => {
   });
 
   test("arrow down moves the selected row across groups", () => {
-    // Seed a project so the "Reprendre" group has at least one row, giving
-    // us two groups (Reprendre + Commandes + Leçons) to navigate across.
+    // Seed a project so the "Jump back in" group has at least one row, giving
+    // us two groups (Jump back in + Commands + Lessons) to navigate across.
     useProjectStore.setState({
       projects: [
         {
@@ -113,7 +113,7 @@ describe("CommandPalette", () => {
     render(<CommandPalette />);
     const firstRow = document.querySelector(".palette-item--sel");
     expect(firstRow?.textContent).toContain("alpha");
-    const input = screen.getByRole("textbox", { name: /rechercher/i }) as HTMLInputElement;
+    const input = screen.getByRole("textbox", { name: /search/i }) as HTMLInputElement;
     act(() => {
       fireEvent.keyDown(input, { key: "ArrowDown" });
     });

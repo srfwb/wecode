@@ -5,23 +5,23 @@ import { localizeFileError } from "./fileErrorMessages";
 describe("localizeFileError", () => {
   test("translates forbidden-character errors", () => {
     expect(localizeFileError(new Error("forbidden character in segment: foo|bar"))).toContain(
-      "caractère interdit",
+      "forbidden character",
     );
   });
 
   test("translates invalid path segment errors", () => {
-    expect(localizeFileError(new Error('invalid path segment "."'))).toContain(". » ou « ..");
+    expect(localizeFileError(new Error('invalid path segment "."'))).toContain('"." or ".."');
   });
 
   test("translates already-exists errors", () => {
     expect(localizeFileError(new Error("file already exists"))).toContain(
-      "du même nom existe déjà",
+      "A file with that name already exists",
     );
   });
 
   test("translates rename-directory refusal", () => {
     expect(localizeFileError(new Error("refusing to rename directory"))).toContain(
-      "renommer un dossier",
+      "Cannot rename a folder",
     );
   });
 
@@ -30,6 +30,6 @@ describe("localizeFileError", () => {
   });
 
   test("accepts non-Error values", () => {
-    expect(localizeFileError("file not found")).toContain("n'existe plus");
+    expect(localizeFileError("file not found")).toContain("no longer exists");
   });
 });

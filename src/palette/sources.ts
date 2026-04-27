@@ -1,4 +1,5 @@
-import { toast } from "../ide/shell/toastStore";
+import { ALL_CONTENT } from "../lessons/data";
+import { useLessonStore } from "../lessons/lessonStore";
 import { openProject } from "../projects/actions";
 import { useProjectStore } from "../projects/projectStore";
 import { useIdeStore } from "../state/ideStore";
@@ -85,22 +86,18 @@ export function buildCommandItems(): PaletteItem[] {
   }));
 }
 
-// Single placeholder row so the Lessons section shows up even before the
-// curriculum lands. Selecting it toasts "Coming soon".
 export function buildLessonItems(): PaletteItem[] {
-  return [
-    {
-      id: "lesson:placeholder",
-      group: "lessons",
-      title: "Lesson path",
-      subtitle: "Coming soon",
-      pill: "lesson",
-      icon: { glyph: "L", tone: "lesson" },
-      onSelect: () => {
-        toast.info("Coming soon");
-      },
+  return ALL_CONTENT.map<PaletteItem>((item) => ({
+    id: `lesson:${item.id}`,
+    group: "lessons",
+    title: item.title,
+    subtitle: `${item.difficulty} · ~${item.estimatedMinutes} min`,
+    pill: item.type,
+    icon: { glyph: item.type === "lesson" ? "L" : "C", tone: "lesson" },
+    onSelect: () => {
+      useLessonStore.getState().startLesson(item.id);
     },
-  ];
+  }));
 }
 
 // Orchestrator: assemble every group in the canonical order and drop those

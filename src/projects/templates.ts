@@ -14,8 +14,8 @@ export interface Template {
 
 const BLANK: Template = {
   id: "blank",
-  title: "Dossier vierge",
-  description: "Projet vide. Tu choisis les fichiers.",
+  title: "Blank project",
+  description: "Empty project. You choose the files.",
   kind: "blank",
   tags: [],
   files: {},
@@ -23,8 +23,8 @@ const BLANK: Template = {
 
 const HTML_CSS: Template = {
   id: "html-css",
-  title: "Démarrage HTML + CSS",
-  description: "Deux fichiers prêts à être stylés.",
+  title: "HTML + CSS Starter",
+  description: "Two files ready to be styled.",
   kind: "html",
   tags: ["html", "css"],
   files: DEFAULT_FILES,

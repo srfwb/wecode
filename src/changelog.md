@@ -1,5 +1,33 @@
 # Nouveautés
 
+## v0.3.0 — 27 avril 2026
+
+### Ajouté
+
+- **Système de leçons** — des leçons guidées pas à pas avec validation en temps réel. L'app vérifie ton code à chaque modification et coche les objectifs au fur et à mesure.
+- **Système de challenges** — des défis libres où tu dois atteindre un objectif sans instructions détaillées. Tu peux créer et supprimer des fichiers.
+- **Navigation par onglets dans l'Accueil** — le rail gauche est maintenant un routeur : clique sur Leçons ou Challenges pour voir la liste complète avec ton avancement.
+- **Compteur de progression** — le rail affiche combien de leçons tu as terminées (ex : `1 / 2`).
+- **Carte « Reprends »** — si tu as une leçon en cours, la carte de reprise la montre en priorité sur les projets.
+- **Première leçon** : « La structure d'une page HTML » — apprends `<head>`, `<body>`, `<title>`, `<h1>`, `<p>` avec 5 checkpoints.
+- **Premier challenge** : « Crée une page simple » — un titre, un paragraphe et une couleur de fond.
+- **Modale changelog** — clique sur « Nouveautés de la vX.Y.Z » dans le rail pour voir l'historique des mises à jour.
+
+### Amélioré
+
+- Les raccourcis clavier (Ctrl+Tab, Ctrl+W) fonctionnent en mode leçon. Ctrl+N est bloqué (pas de création de fichier en leçon).
+- Le dock leçon est un vrai `<button>` accessible au clavier (avec `aria-expanded`).
+- Le menu « Ouvrir » en clic droit sur un fichier fonctionne en mode leçon.
+- La barre de statut affiche la progression des checkpoints au lieu de la version en mode leçon.
+
+### Corrigé
+
+- Le dock se replie correctement (le contenu ne déborde plus sous le header).
+- Le contour ambre ne s'affiche plus sur les boutons de sélection de template.
+- La propriété CSS dans les règles de validation est correctement échappée (pas de faux match avec des caractères spéciaux).
+
+---
+
 ## v0.2.0-2 — 25 avril 2026
 
 ### Ajouté

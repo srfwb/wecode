@@ -11,16 +11,16 @@ export function BottomTip() {
         <IconBulb />
       </div>
       <div className="home-tip-body">
-        <strong>Astuce.</strong> Survole n'importe quel mot dans l'éditeur pour voir une explication
-        rapide — c'est comme ça que cet IDE enseigne.
+        <strong>Tip.</strong> Hover any keyword in the editor for a quick explanation — that's how
+        this IDE teaches.
       </div>
       <button
         type="button"
         className="home-tip-dismiss"
         onClick={() => setVisible(false)}
-        aria-label="Masquer l'astuce"
+        aria-label="Dismiss tip"
       >
-        Compris ✕
+        Got it ✕
       </button>
     </div>
   );

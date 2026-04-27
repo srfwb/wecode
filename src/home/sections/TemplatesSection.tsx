@@ -5,7 +5,7 @@ export function TemplatesSection() {
   return (
     <section className="home-section">
       <div className="home-sec-head">
-        <h3>Commence un nouveau projet</h3>
+        <h3>Start a new project</h3>
       </div>
       <div className="home-tpl-grid">
         {TEMPLATES.map((t) => (

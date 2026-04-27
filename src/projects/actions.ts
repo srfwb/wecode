@@ -41,7 +41,7 @@ export function renameProject(id: string, newName: string): void {
   const duplicate = useProjectStore
     .getState()
     .projects.some((p) => p.id !== id && p.name.toLowerCase() === name.toLowerCase());
-  if (duplicate) throw new Error(`Un projet avec le nom « ${name} » existe déjà.`);
+  if (duplicate) throw new Error(`A project named "${name}" already exists.`);
   useProjectStore.getState().upsert({ ...project, name });
 }
 
@@ -68,7 +68,7 @@ async function createProjectImpl(input: {
   const projectPath = joinChild(parentDir, name);
   const exists = await invoke<boolean>("fs_path_exists", { path: projectPath });
   if (exists) {
-    throw new Error(`Un projet avec ce nom existe déjà dans ce dossier.`);
+    throw new Error(`A project with this name already exists in this folder.`);
   }
   await invoke("fs_ensure_dir", { dirPath: projectPath });
 

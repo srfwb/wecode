@@ -26,8 +26,8 @@ export function DeleteProjectDialog({ projectId }: Props) {
       await deleteProject(projectId, { removeFromDisk });
       toast.success(
         removeFromDisk
-          ? `Projet « ${project.name} » et son dossier supprimés.`
-          : `Projet « ${project.name} » retiré de WeCode.`,
+          ? `Project "${project.name}" and its folder deleted.`
+          : `Project "${project.name}" removed from WeCode.`,
       );
       closeAll();
     } catch (err) {
@@ -52,10 +52,10 @@ export function DeleteProjectDialog({ projectId }: Props) {
         aria-labelledby="delete-project-title"
       >
         <div id="delete-project-title" className="modal__title">
-          Supprimer le projet
+          Delete project
         </div>
         <div className="modal__body">
-          Le projet <strong>{project.name}</strong> sera retiré de ta liste.
+          Project <strong>{project.name}</strong> will be removed from your list.
           <div className="modal__path" title={project.path}>
             {project.path}
           </div>
@@ -65,17 +65,17 @@ export function DeleteProjectDialog({ projectId }: Props) {
               checked={removeFromDisk}
               onChange={(e) => setRemoveFromDisk(e.target.checked)}
             />
-            <span>Aussi supprimer le dossier et tous ses fichiers sur le disque</span>
+            <span>Also delete the folder and all its files from disk</span>
           </label>
           {removeFromDisk && (
             <div className="modal__warning">
-              Cette action est irréversible. Les fichiers seront définitivement supprimés.
+              This action cannot be undone. The files will be permanently deleted.
             </div>
           )}
         </div>
         <div className="modal__actions">
           <button type="button" onClick={closeAll} disabled={submitting}>
-            Annuler
+            Cancel
           </button>
           <button
             type="button"
@@ -83,7 +83,7 @@ export function DeleteProjectDialog({ projectId }: Props) {
             onClick={() => void submit()}
             disabled={submitting}
           >
-            {submitting ? "Suppression…" : removeFromDisk ? "Supprimer le dossier" : "Retirer"}
+            {submitting ? "Deleting…" : removeFromDisk ? "Delete folder" : "Remove"}
           </button>
         </div>
       </div>

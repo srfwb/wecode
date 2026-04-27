@@ -31,7 +31,7 @@ export function RenameProjectModal({ projectId }: Props) {
     setSubmitting(true);
     try {
       renameProject(projectId, name.trim());
-      toast.success(`Projet renommé en « ${name.trim()} ».`);
+      toast.success(`Project renamed to "${name.trim()}".`);
       closeAll();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : String(err));
@@ -51,13 +51,13 @@ export function RenameProjectModal({ projectId }: Props) {
         onSubmit={submit}
       >
         <div id="rename-project-title" className="modal__title">
-          Renommer le projet
+          Rename project
         </div>
         <div className="modal__body">
-          Le dossier sur disque garde son nom d'origine — seule l'étiquette dans WeCode change.
+          The folder on disk keeps its original name — only the label in WeCode changes.
         </div>
         <label className="modal__field">
-          <span className="modal__label">Nouveau nom</span>
+          <span className="modal__label">New name</span>
           <input
             className="modal__input"
             value={name}
@@ -68,10 +68,10 @@ export function RenameProjectModal({ projectId }: Props) {
         </label>
         <div className="modal__actions">
           <button type="button" onClick={closeAll} disabled={submitting}>
-            Annuler
+            Cancel
           </button>
           <button type="submit" disabled={!canSubmit}>
-            {submitting ? "Renommage…" : "Renommer"}
+            {submitting ? "Renaming…" : "Rename"}
           </button>
         </div>
       </form>

@@ -37,17 +37,17 @@ const WINDOWS_RESERVED_NAMES = new Set([
 
 export function validateProjectName(raw: string): string {
   const name = raw.trim();
-  if (!name) return "Le nom ne peut pas être vide.";
-  if (name.length > 80) return "Le nom est trop long (max 80 caractères).";
+  if (!name) return "Name cannot be empty.";
+  if (name.length > 80) return "Name is too long (max 80 characters).";
   if (FORBIDDEN_CHARS.test(name)) {
-    return 'Le nom ne peut pas contenir : \\ / : * ? " < > |';
+    return 'Name cannot contain: \\ / : * ? " < > |';
   }
-  if (name === "." || name === "..") return "Nom invalide.";
+  if (name === "." || name === "..") return "Invalid name.";
   // Windows reserved names are case-insensitive and refuse extensions too
   // (CON.txt is as broken as CON). Strip the extension for the comparison.
   const base = name.split(".")[0] ?? name;
   if (WINDOWS_RESERVED_NAMES.has(base.toUpperCase())) {
-    return `« ${name} » est un nom réservé par Windows.`;
+    return `"${name}" is a name reserved by Windows.`;
   }
   return "";
 }

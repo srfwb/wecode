@@ -1,0 +1,48 @@
+{
+  "id": "challenge-01-simple-page",
+  "type": "challenge",
+  "title": "Crée une page simple",
+  "description": "Un titre, un paragraphe et une couleur de fond — à toi de jouer.",
+  "difficulty": "débutant",
+  "estimatedMinutes": 10,
+  "tags": ["html", "css"],
+  "allowFileOps": true,
+  "starterFiles": {
+    "/index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n</body>\n</html>",
+    "/style.css": ""
+  },
+  "steps": [
+    {
+      "heading": "Objectif",
+      "paragraphs": [
+        {
+          "kind": "text",
+          "content": "Construis une page complète : ajoute un titre <h1> et un paragraphe <p> dans le HTML, puis ouvre style.css et donne une couleur de fond à la page en ciblant body avec la propriété background-color."
+        }
+      ],
+      "checkpoints": [
+        {
+          "id": "has-h1",
+          "label": "Ajoute un titre <h1>",
+          "rule": { "type": "element-exists", "selector": "h1", "file": "/index.html" }
+        },
+        {
+          "id": "has-p",
+          "label": "Ajoute un paragraphe <p>",
+          "rule": { "type": "element-exists", "selector": "p", "file": "/index.html" }
+        },
+        {
+          "id": "has-bg",
+          "label": "Donne une couleur de fond à la page",
+          "rule": {
+            "type": "css-property",
+            "selector": "body",
+            "file": "/style.css",
+            "property": "background-color",
+            "match": "exists"
+          }
+        }
+      ]
+    }
+  ]
+}

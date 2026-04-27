@@ -7,20 +7,27 @@ interface Props {
   onClose: () => void;
 }
 
-// Minimal markdown-to-HTML for the changelog. Handles headings, bold, lists,
-// horizontal rules and paragraphs — enough for a Keep a Changelog file.
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function applyInline(text: string): string {
+  return escapeHtml(text)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/`(.+?)`/g, '<span class="inline-code">$1</span>');
+}
+
 function renderMarkdown(md: string): string {
   return md
     .split("\n")
     .map((line) => {
-      if (line.startsWith("# ")) return `<h2 class="cl-h1">${line.slice(2)}</h2>`;
-      if (line.startsWith("## ")) return `<h3 class="cl-h2">${line.slice(3)}</h3>`;
-      if (line.startsWith("### ")) return `<h4 class="cl-h3">${line.slice(4)}</h4>`;
+      if (line.startsWith("# ")) return `<h2 class="cl-h1">${applyInline(line.slice(2))}</h2>`;
+      if (line.startsWith("## ")) return `<h3 class="cl-h2">${applyInline(line.slice(3))}</h3>`;
+      if (line.startsWith("### ")) return `<h4 class="cl-h3">${applyInline(line.slice(4))}</h4>`;
       if (line.startsWith("---")) return '<hr class="cl-hr"/>';
-      if (line.startsWith("- "))
-        return `<li class="cl-li">${line.slice(2).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</li>`;
+      if (line.startsWith("- ")) return `<li class="cl-li">${applyInline(line.slice(2))}</li>`;
       if (line.trim() === "") return "";
-      return `<p class="cl-p">${line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</p>`;
+      return `<p class="cl-p">${applyInline(line)}</p>`;
     })
     .join("\n");
 }

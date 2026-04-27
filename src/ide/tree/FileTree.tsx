@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useModalA11y } from "../../hooks/useModalA11y";
+import { useLessonContext } from "../../lessons/useLessonContext";
 import { useIdeStore } from "../../state/ideStore";
 import { vfs } from "../../vfs/VirtualFS";
 import { ConfirmDialog } from "../shell/ConfirmDialog";
@@ -31,6 +32,8 @@ export function FileTree() {
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const openFile = useIdeStore((s) => s.openFile);
   const activeFile = useIdeStore((s) => s.activeFile);
+  const lessonCtx = useLessonContext();
+  const fileOpsLocked = lessonCtx?.fileOpsLocked ?? false;
 
   // Only restructure the tree when file *set* changes. Ignore plain writes —
   // those fire on every keystroke in the editor and would force rebuildTree
@@ -93,7 +96,7 @@ export function FileTree() {
   };
 
   const menuItems: ContextMenuItem[] = menu
-    ? buildMenuItems(menu.target, {
+    ? buildMenuItems(menu.target, fileOpsLocked, {
         startCreate: (parentPath) => setPrompt({ kind: "create", parentPath, initial: "" }),
         startRename: (path) => {
           const parent = path.includes("/", 1) ? path.slice(0, path.lastIndexOf("/")) || "/" : "/";
@@ -140,19 +143,21 @@ export function FileTree() {
       <div className="sb-rail">
         <span className="label">Fichiers</span>
         <div className="tools">
-          <button
-            type="button"
-            className="ico-btn"
-            title="Nouveau fichier"
-            aria-label="Nouveau fichier"
-            onClick={startNewFileAtRoot}
-          >
-            <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-              <path d="M14 3v5h5" />
-              <path d="M12 12v6M9 15h6" />
-            </svg>
-          </button>
+          {!fileOpsLocked && (
+            <button
+              type="button"
+              className="ico-btn"
+              title="Nouveau fichier"
+              aria-label="Nouveau fichier"
+              onClick={startNewFileAtRoot}
+            >
+              <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                <path d="M14 3v5h5" />
+                <path d="M12 12v6M9 15h6" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
       <ul className="file-tree__list">
@@ -274,12 +279,22 @@ function collectVisibleFiles(nodes: TreeNode[]): string[] {
 
 function buildMenuItems(
   target: MenuState["target"],
+  fileOpsLocked: boolean,
   actions: {
     startCreate: (parentPath: string) => void;
     startRename: (path: string) => void;
     deletePath: (path: string) => void;
   },
 ): ContextMenuItem[] {
+  if (fileOpsLocked) {
+    if (target.kind === "folder") return [];
+    return [
+      {
+        label: "Ouvrir",
+        onSelect: () => useIdeStore.getState().openFile(target.path),
+      },
+    ];
+  }
   if (target.kind === "folder") {
     return [{ label: "Nouveau fichier", onSelect: () => actions.startCreate(target.path) }];
   }

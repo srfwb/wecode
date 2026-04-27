@@ -1099,7 +1099,7 @@ button.brand {
 }
 
 /* ============================================================
-   Lesson dock (UI shell — mocked content until the lesson engine lands)
+   Lesson dock
    ============================================================ */
 
 .dock {
@@ -1107,11 +1107,12 @@ button.brand {
   border-top: 1px solid var(--line-soft);
   display: flex;
   flex-direction: column;
+  min-height: 0;
   max-height: 44vh;
-  transition: max-height 0.2s ease;
   overflow: hidden;
+  transition: max-height 0.2s;
 }
-.dock--collapsed {
+.dock.collapsed {
   max-height: 40px;
 }
 
@@ -1119,25 +1120,23 @@ button.brand {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   height: 40px;
   padding: 0 14px;
-  width: 100%;
+  cursor: pointer;
+  flex: none;
+  background: transparent;
+  border: 0;
   color: var(--fg-0);
   font: inherit;
   text-align: left;
-  flex: none;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-}
-.dock-head:hover {
-  background: var(--bg-1);
 }
 .dock-head .chev {
   color: var(--fg-3);
-  transition: transform 0.15s ease;
+  transition: transform 0.15s;
+  font-size: 0.85em;
 }
-.dock--collapsed .dock-head .chev {
+.dock.collapsed .dock-head .chev {
   transform: rotate(-90deg);
 }
 
@@ -1166,10 +1165,10 @@ button.brand {
 }
 
 .progress {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
   color: var(--fg-2);
   font-size: 0.88em;
 }
@@ -1189,7 +1188,7 @@ button.brand {
 .dock-body {
   padding: 4px 14px 14px;
   overflow-y: auto;
-  flex: 1 1 auto;
+  flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -1201,7 +1200,6 @@ button.brand {
   font-size: 1.1em;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--fg-0);
 }
 .lesson-text p {
   margin: 0 0 10px;
@@ -1262,22 +1260,22 @@ button.brand {
   font-size: 0.75em;
   flex: none;
 }
-.cp--done .tick {
+.cp.done .tick {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--bg-0);
 }
-.cp--active {
+.cp.active {
   background: var(--accent-soft);
   border-color: var(--accent-dim);
 }
-.cp--active .tick {
+.cp.active .tick {
   border-color: var(--accent);
 }
 .cp .label {
   color: var(--fg-0);
 }
-.cp--done .label {
+.cp.done .label {
   color: var(--fg-2);
   text-decoration: line-through;
   text-decoration-color: var(--fg-3);
@@ -1287,7 +1285,7 @@ button.brand {
   font-size: 0.78em;
   color: var(--fg-3);
 }
-.cp .meta--live {
+.cp .meta.live {
   color: var(--accent);
 }
 
@@ -1482,6 +1480,12 @@ button.brand {
   width: 2px;
   background: var(--accent);
   border-radius: 2px;
+}
+.home-nav-item__counter {
+  margin-left: auto;
+  color: var(--fg-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
 }
 
 .home-rail-foot {
@@ -1925,6 +1929,99 @@ button.brand {
 }
 .home-proj:hover .home-proj-open {
   opacity: 1;
+}
+
+/* Lesson & Challenge cards */
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lesson-card {
+  text-align: left;
+  padding: 14px;
+  background: var(--bg-1);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    border-color 0.12s,
+    background 0.12s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+.lesson-card:hover {
+  border-color: var(--line);
+  background: var(--bg-2);
+}
+.lesson-card:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.lesson-card--in-progress {
+  border-color: oklch(0.55 0.09 75 / 0.5);
+}
+
+.lesson-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesson-card__badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.lesson-card__badge--done {
+  background: oklch(0.35 0.1 155 / 0.35);
+  color: var(--ok);
+}
+.lesson-card__badge--active {
+  background: oklch(0.35 0.1 75 / 0.35);
+  color: var(--accent);
+}
+.lesson-card__badge--todo {
+  color: var(--fg-3);
+}
+
+.lesson-card__time {
+  color: var(--fg-3);
+  font-size: 11px;
+}
+
+.lesson-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg-0);
+}
+
+.lesson-card__desc {
+  font-size: 12px;
+  color: var(--fg-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lesson-card__progress {
+  height: 3px;
+  background: var(--line-soft);
+  border-radius: 2px;
+  margin-top: 4px;
+}
+.lesson-card__progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
 }
 
 /* View transition — Home ↔ IDE */

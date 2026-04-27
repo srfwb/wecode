@@ -42,7 +42,8 @@ export function isTypingInField(target: EventTarget | null): boolean {
 export function useGlobalShortcuts(): void {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (useIdeStore.getState().view !== "ide") return;
+      const view = useIdeStore.getState().view;
+      if (view !== "ide" && view !== "lesson") return;
       if (e.isComposing) return;
       const mod = e.ctrlKey || e.metaKey;
       if (!mod) return;
@@ -61,6 +62,7 @@ export function useGlobalShortcuts(): void {
 
       if (e.key === "n" || e.key === "N") {
         if (isTypingInField(e.target)) return;
+        if (view === "lesson") return;
         e.preventDefault();
         shortcutEvents.dispatchEvent(new Event(SHORTCUT_NEW_FILE));
         return;

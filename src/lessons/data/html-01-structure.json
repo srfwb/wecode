@@ -1,0 +1,55 @@
+{
+  "id": "html-01-structure",
+  "type": "lesson",
+  "title": "La structure d'une page HTML",
+  "description": "Découvre les balises de base : html, head, body, titre et paragraphe.",
+  "difficulty": "débutant",
+  "estimatedMinutes": 10,
+  "tags": ["html"],
+  "allowFileOps": false,
+  "starterFiles": {
+    "/index.html": "<!DOCTYPE html>\n<html>\n</html>"
+  },
+  "steps": [
+    {
+      "heading": "Construis le squelette",
+      "paragraphs": [
+        {
+          "kind": "text",
+          "content": "Une page HTML est organisée en deux grandes parties : le <head> contient les informations invisibles (comme le titre affiché dans l'onglet), et le <body> contient tout ce que le visiteur voit. À l'intérieur du <head>, place un <title> pour nommer ta page. Dans le <body>, utilise <h1> pour un titre visible et <p> pour un paragraphe de texte."
+        },
+        {
+          "kind": "code",
+          "content": "<!DOCTYPE html>\n<html>\n  <head>\n    <title>Ma page</title>\n  </head>\n  <body>\n    <h1>Bonjour !</h1>\n    <p>Voici mon premier paragraphe.</p>\n  </body>\n</html>"
+        }
+      ],
+      "checkpoints": [
+        {
+          "id": "has-head",
+          "label": "Ajoute une balise <head>",
+          "rule": { "type": "element-exists", "selector": "head", "file": "/index.html" }
+        },
+        {
+          "id": "has-body",
+          "label": "Ajoute une balise <body>",
+          "rule": { "type": "element-exists", "selector": "body", "file": "/index.html" }
+        },
+        {
+          "id": "has-title",
+          "label": "Ajoute un <title> dans le <head>",
+          "rule": { "type": "nesting", "parent": "head", "child": "title", "file": "/index.html" }
+        },
+        {
+          "id": "has-h1",
+          "label": "Ajoute un titre <h1> dans le <body>",
+          "rule": { "type": "nesting", "parent": "body", "child": "h1", "file": "/index.html" }
+        },
+        {
+          "id": "has-p",
+          "label": "Ajoute un paragraphe <p>",
+          "rule": { "type": "element-exists", "selector": "p", "file": "/index.html" }
+        }
+      ]
+    }
+  ]
+}

@@ -22,7 +22,12 @@ export function LessonDock() {
 
   return (
     <aside className={`dock${dockCollapsed ? " collapsed" : ""}`}>
-      <div className="dock-head" onClick={toggleDock}>
+      <button
+        type="button"
+        className="dock-head"
+        onClick={toggleDock}
+        aria-expanded={!dockCollapsed}
+      >
         <svg className="i-lg chev" viewBox="0 0 24 24" aria-hidden="true">
           <path d="m6 9 6 6 6-6" />
         </svg>
@@ -36,7 +41,7 @@ export function LessonDock() {
           </span>
           <ProgressRing value={progress} />
         </div>
-      </div>
+      </button>
       <div className="dock-body">
         <div className="lesson-text">
           <h2>{step.heading}</h2>

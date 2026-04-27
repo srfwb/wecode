@@ -27,6 +27,7 @@ export function checkCssProperty(
   const parsed = findCssRules(css);
   const matching = parsed.find((r) => r.selector === rule.selector);
   if (!matching) return false;
-  const propRe = new RegExp(`${rule.property}\\s*:`, "i");
+  const escaped = rule.property.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const propRe = new RegExp(`${escaped}\\s*:`, "i");
   return propRe.test(matching.body);
 }

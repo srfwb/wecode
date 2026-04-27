@@ -39,7 +39,9 @@ export function LessonProvider({ children }: LessonProviderProps) {
     const allDone = allCheckpoints.every((cp) => updatedStates[cp.id] === "done");
     if (allDone && activeLessonId) {
       const doneIds = allCheckpoints.map((cp) => cp.id);
-      void markLessonCompleted(activeLessonId, doneIds);
+      markLessonCompleted(activeLessonId, doneIds).catch((err) =>
+        console.error("Failed to persist lesson completion", err),
+      );
     }
   }, [lesson, activeLessonId]);
 

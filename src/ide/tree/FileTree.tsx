@@ -288,7 +288,12 @@ function buildMenuItems(
 ): ContextMenuItem[] {
   if (fileOpsLocked) {
     if (target.kind === "folder") return [];
-    return [{ label: "Ouvrir", onSelect: () => {} }];
+    return [
+      {
+        label: "Ouvrir",
+        onSelect: () => useIdeStore.getState().openFile(target.path),
+      },
+    ];
   }
   if (target.kind === "folder") {
     return [{ label: "Nouveau fichier", onSelect: () => actions.startCreate(target.path) }];

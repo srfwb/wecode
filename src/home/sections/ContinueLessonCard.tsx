@@ -19,7 +19,8 @@ export function ContinueLessonCard({ lesson, doneCount, totalCount }: Props) {
         <h2 className="home-continue-title">{lesson.title}</h2>
         <p className="home-continue-sub">
           <span className="home-continue-meta">
-            Leçon · checkpoint {doneCount} / {totalCount}
+            {lesson.type === "lesson" ? "Leçon" : "Challenge"} · checkpoint {doneCount} /{" "}
+            {totalCount}
           </span>
         </p>
       </div>

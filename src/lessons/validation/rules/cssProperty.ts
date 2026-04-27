@@ -1,11 +1,10 @@
 import type { MatchMode } from "../types";
 
-const RULE_RE = /([^{}]+)\{([^}]*)\}/g;
-
 function findCssRules(css: string): Array<{ selector: string; body: string }> {
+  const re = /([^{}]+)\{([^}]*)\}/g;
   const results: Array<{ selector: string; body: string }> = [];
   let match;
-  while ((match = RULE_RE.exec(css)) !== null) {
+  while ((match = re.exec(css)) !== null) {
     const selector = (match[1] ?? "").trim();
     const body = match[2] ?? "";
     results.push({ selector, body });

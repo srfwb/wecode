@@ -19,6 +19,7 @@ export function evaluateRule(rule: ValidationRule, files: Record<string, string>
     case "composite":
       return checkComposite(rule, files);
     default:
+      console.warn(`Unimplemented validation rule type: ${(rule as { type: string }).type}`);
       return false;
   }
 }

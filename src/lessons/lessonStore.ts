@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { useIdeStore } from "../state/ideStore";
+import { syncVfsNow } from "../tauri/bridge";
 import { vfs } from "../vfs/VirtualFS";
 import { getLessonById } from "./data";
 import type { CheckpointStatus } from "./types";
@@ -23,8 +24,11 @@ export const useLessonStore = create<LessonState>((set) => ({
     const lesson = getLessonById(id);
     if (!lesson) return;
 
-    // Hydrate VFS with starter files
+    // Hydrate VFS with starter files and push the snapshot to the Rust
+    // preview cache so the iframe shows the lesson's starting state
+    // immediately (not a stale project or a blank page).
     vfs.hydrate(lesson.starterFiles);
+    void syncVfsNow(vfs.snapshot());
 
     // Initialize all checkpoints to "todo"
     const states: Record<string, CheckpointStatus> = {};
@@ -54,6 +58,7 @@ export const useLessonStore = create<LessonState>((set) => ({
       }
     }
     vfs.hydrate(lesson.starterFiles);
+    void syncVfsNow(vfs.snapshot());
     set({ checkpointStates: states });
   },
 

@@ -1,8 +1,13 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { useIdeStore } from "../state/ideStore";
 import { vfs } from "../vfs/VirtualFS";
 import { useLessonStore } from "./lessonStore";
+
+// syncVfsNow calls Tauri IPC which doesn't exist in Node test env.
+vi.mock("../tauri/bridge", () => ({
+  syncVfsNow: vi.fn().mockResolvedValue(undefined),
+}));
 
 describe("useLessonStore", () => {
   beforeEach(() => {

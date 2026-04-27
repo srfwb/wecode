@@ -8,7 +8,7 @@
   "tags": ["html", "css"],
   "allowFileOps": true,
   "starterFiles": {
-    "/index.html": "<!DOCTYPE html>\n<html>\n<head>\n</head>\n<body>\n</body>\n</html>",
+    "/index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n</body>\n</html>",
     "/style.css": ""
   },
   "steps": [

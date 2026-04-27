@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { vfs } from "../vfs/VirtualFS";
 import { getLessonById } from "./data";
 import { useLessonStore } from "./lessonStore";
+import { markLessonCompleted } from "./progressPersistence";
 import type { CheckpointState } from "./types";
 import { LessonContext } from "./useLessonContext";
 import type { LessonContextValue } from "./useLessonContext";
@@ -32,7 +33,15 @@ export function LessonProvider({ children }: LessonProviderProps) {
         completeCheckpoint(result.checkpointId);
       }
     }
-  }, [lesson]);
+
+    // Check if all checkpoints are now done → persist completion
+    const updatedStates = useLessonStore.getState().checkpointStates;
+    const allDone = allCheckpoints.every((cp) => updatedStates[cp.id] === "done");
+    if (allDone && activeLessonId) {
+      const doneIds = allCheckpoints.map((cp) => cp.id);
+      void markLessonCompleted(activeLessonId, doneIds);
+    }
+  }, [lesson, activeLessonId]);
 
   // Subscribe to VFS changes with 300ms debounce
   useEffect(() => {

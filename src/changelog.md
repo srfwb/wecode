@@ -1,90 +1,90 @@
-# Nouveautés
+# What's new
 
-## v0.3.0 — 27 avril 2026
+## v0.3.0 — April 27, 2026
 
-### Ajouté
+### Added
 
-- **Système de leçons** — des leçons guidées pas à pas avec validation en temps réel. L'app vérifie ton code à chaque modification et coche les objectifs au fur et à mesure.
-- **Système de challenges** — des défis libres où tu dois atteindre un objectif sans instructions détaillées. Tu peux créer et supprimer des fichiers.
-- **Navigation par onglets dans l'Accueil** — le rail gauche est maintenant un routeur : clique sur Leçons ou Challenges pour voir la liste complète avec ton avancement.
-- **Compteur de progression** — le rail affiche combien de leçons tu as terminées (ex : `1 / 2`).
-- **Carte « Reprends »** — si tu as une leçon en cours, la carte de reprise la montre en priorité sur les projets.
-- **Première leçon** : « La structure d'une page HTML » — apprends `<head>`, `<body>`, `<title>`, `<h1>`, `<p>` avec 5 checkpoints.
-- **Premier challenge** : « Crée une page simple » — un titre, un paragraphe et une couleur de fond.
-- **Modale changelog** — clique sur « Nouveautés de la vX.Y.Z » dans le rail pour voir l'historique des mises à jour.
+- **Lesson system** — step-by-step guided lessons with real-time validation. The app checks your code on every edit and ticks off objectives as you go.
+- **Challenge system** — open-ended challenges where you reach a goal without detailed instructions. You can create and delete files.
+- **Tab navigation in Home** — the left rail is now a router: click Lessons or Challenges to see the full list with your progress.
+- **Progress counter** — the rail shows how many lessons you have completed (e.g. `1 / 2`).
+- **"Continue" card** — if you have a lesson in progress, the resume card shows it above your projects.
+- **First lesson**: "HTML Page Structure" — learn `<head>`, `<body>`, `<title>`, `<h1>`, `<p>` with 5 checkpoints.
+- **First challenge**: "Build a simple page" — a heading, a paragraph, and a background color.
+- **Changelog modal** — click "What's new in vX.Y.Z" in the rail to view the update history.
 
-### Amélioré
+### Changed
 
-- Les raccourcis clavier (Ctrl+Tab, Ctrl+W) fonctionnent en mode leçon. Ctrl+N est bloqué (pas de création de fichier en leçon).
-- Le dock leçon est un vrai `<button>` accessible au clavier (avec `aria-expanded`).
-- Le menu « Ouvrir » en clic droit sur un fichier fonctionne en mode leçon.
-- La barre de statut affiche la progression des checkpoints au lieu de la version en mode leçon.
+- Keyboard shortcuts (Ctrl+Tab, Ctrl+W) work in lesson mode. Ctrl+N is blocked (no file creation during a lesson).
+- The lesson dock is a proper accessible `<button>` (with `aria-expanded`).
+- The "Open" right-click context menu on a file works in lesson mode.
+- The status bar shows checkpoint progress instead of the version in lesson mode.
 
-### Corrigé
+### Fixed
 
-- Le dock se replie correctement (le contenu ne déborde plus sous le header).
-- Le contour ambre ne s'affiche plus sur les boutons de sélection de template.
-- La propriété CSS dans les règles de validation est correctement échappée (pas de faux match avec des caractères spéciaux).
-
----
-
-## v0.2.0-2 — 25 avril 2026
-
-### Ajouté
-
-- **Palette de commandes** (Ctrl+K / ⌘K) — rechercher un projet, un fichier ou une commande depuis l'Accueil.
-- **Menu contextuel** sur la section Projets récents — clic droit pour créer un nouveau projet ou lancer une recherche.
-- **Logo pixel-perfect** — le logo WeCode correspond maintenant exactement au design original dans toutes ses variantes.
-- Bannière et carte Open Graph pour le repo GitHub.
-
-### Amélioré
-
-- L'app ne plante plus si le dossier du dernier projet a été supprimé pendant qu'elle était fermée.
-- Un toast d'erreur apparaît si la sauvegarde automatique échoue (disque plein, permissions, etc.).
-- Renommer un projet avec un nom déjà pris par un autre est maintenant interdit.
-- Les onglets de l'ancien projet sont vidés quand tu passes à un autre.
-- Le bouton « Ouvrir le dossier » fonctionne sur Windows (utilise `revealItemInDir` au lieu de `openPath`).
-- L'animation d'apparition des cartes projets est plus rapide.
-- Les items de navigation du rail sont maintenant accessibles au clavier.
-- Le focus clavier est visible sur les onglets de l'éditeur.
-
-### Corrigé
-
-- Le contour orange parasite ne s'affiche plus sur les boutons de template ni sur le menu contextuel.
-- Le menu natif du navigateur (Retour, Actualiser, Inspecter) est bloqué partout dans l'app.
+- The dock collapses correctly (content no longer overflows below the header).
+- The amber outline no longer appears on template selection buttons.
+- The CSS property in validation rules is properly escaped (no false match with special characters).
 
 ---
 
-## v0.2.0-1 — 23 avril 2026
+## v0.2.0-2 — April 25, 2026
 
-### Ajouté
+### Added
 
-- **Page d'accueil** — vue par défaut avec la liste des projets récents, la section « Continue le parcours » et les modèles de projet.
-- **Projets sur disque** — chaque projet est un vrai dossier sous `~/Documents/WeCode/`.
-- Créer un projet depuis un modèle (Dossier vierge ou HTML + CSS) avec un sélecteur de dossier natif.
-- Renommer et supprimer un projet (avec option de suppression du dossier sur le disque).
-- Menu contextuel sur les cartes projets : Ouvrir, Ouvrir le dossier, Renommer, Supprimer.
-- Rechargement automatique quand un éditeur externe modifie les fichiers du projet actif.
-- Aperçu mobile / desktop dans le preview.
-- Infobulles sur les mots-clés HTML et CSS dans l'éditeur.
-- Notifications toast et boîtes de confirmation.
-- Raccourcis clavier : `Ctrl+N` (nouveau fichier), `Ctrl+W` (fermer l'onglet), `Ctrl+Tab` / `Ctrl+Shift+Tab` (naviguer entre les onglets).
-- Barre de statut avec sauvegarde auto, latence preview, langue, encodage, ligne:colonne.
-- Refonte visuelle basée sur un design system oklch (Geist + JetBrains Mono).
+- **Command palette** (Ctrl+K / ⌘K) — search for a project, a file, or a command from Home.
+- **Context menu** on the Recent Projects section — right-click to create a new project or start a search.
+- **Pixel-perfect logo** — the WeCode logo now exactly matches the original design in all its variants.
+- Open Graph banner and card for the GitHub repo.
 
-### Amélioré
+### Changed
 
-- Latence preview réduite de ~1 s à ~100 ms.
+- The app no longer crashes if the last project's folder was deleted while it was closed.
+- An error toast appears if autosave fails (disk full, permissions, etc.).
+- Renaming a project to a name already taken by another is now blocked.
+- The previous project's tabs are cleared when switching to another project.
+- The "Open folder" button works on Windows (uses `revealItemInDir` instead of `openPath`).
+- The project card appear animation is faster.
+- Rail navigation items are now keyboard-accessible.
+- Keyboard focus is visible on editor tabs.
 
-### Corrigé
+### Fixed
 
-- Fuites de listeners lors des recharges HMR.
-- Le panneau d'aperçu ne reste plus blanc sans mises à jour.
+- The stray orange outline no longer appears on template buttons or the context menu.
+- The browser's native menu (Back, Refresh, Inspect) is blocked everywhere in the app.
 
 ---
 
-## v0.1.0 — 20 avril 2026
+## v0.2.0-1 — April 23, 2026
 
-### Ajouté
+### Added
 
-- Première version : shell Tauri v2, éditeur trois panneaux (arborescence, éditeur CodeMirror 6, aperçu live) avec un système de fichiers virtuel en mémoire.
+- **Home page** — default view with the recent projects list, the "Continue your path" section, and project templates.
+- **Disk-backed projects** — each project is a real folder under `~/Documents/WeCode/`.
+- Create a project from a template (Blank folder or HTML + CSS) with a native folder picker.
+- Rename and delete a project (with an option to remove the folder from disk).
+- Context menu on project cards: Open, Open folder, Rename, Delete.
+- Automatic reload when an external editor modifies files in the active project.
+- Mobile / desktop toggle in the preview panel.
+- Hover tooltips on HTML and CSS keywords in the editor.
+- Toast notifications and confirmation dialogs.
+- Keyboard shortcuts: `Ctrl+N` (new file), `Ctrl+W` (close tab), `Ctrl+Tab` / `Ctrl+Shift+Tab` (navigate between tabs).
+- Status bar with autosave, preview latency, language, encoding, line:column.
+- Visual redesign based on an oklch design system (Geist + JetBrains Mono).
+
+### Changed
+
+- Preview latency reduced from ~1 s to ~100 ms.
+
+### Fixed
+
+- Listener leaks on HMR reloads.
+- The preview panel no longer stays blank without updates.
+
+---
+
+## v0.1.0 — April 20, 2026
+
+### Added
+
+- First release: Tauri v2 shell, three-panel editor (file tree, CodeMirror 6 editor, live preview) with an in-memory virtual file system.

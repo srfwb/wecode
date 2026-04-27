@@ -3,7 +3,7 @@
   "type": "challenge",
   "title": "Crée une page simple",
   "description": "Un titre, un paragraphe et une couleur de fond — à toi de jouer.",
-  "difficulty": "débutant",
+  "difficulty": "beginner",
   "estimatedMinutes": 10,
   "tags": ["html", "css"],
   "allowFileOps": true,

@@ -21,8 +21,8 @@ export function HomeNav() {
       <HomeNavItem
         icon={<IconHome />}
         label="Accueil"
-        active={tab === "accueil"}
-        onClick={() => setTab("accueil")}
+        active={tab === "home"}
+        onClick={() => setTab("home")}
       />
       <HomeNavItem
         icon={<IconBook />}

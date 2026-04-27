@@ -17,7 +17,7 @@ export function HomeShell() {
     <div className="home-shell">
       <HomeRail />
       <main className="home-main">
-        {tab === "accueil" && (
+        {tab === "home" && (
           <>
             <HomeSearch />
             <ContinueSection />

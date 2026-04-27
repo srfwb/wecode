@@ -3,7 +3,7 @@
   "type": "lesson",
   "title": "La structure d'une page HTML",
   "description": "Découvre les balises de base : html, head, body, titre et paragraphe.",
-  "difficulty": "débutant",
+  "difficulty": "beginner",
   "estimatedMinutes": 10,
   "tags": ["html"],
   "allowFileOps": false,

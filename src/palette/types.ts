@@ -35,13 +35,13 @@ export const PALETTE_GROUP_ORDER: readonly PaletteGroupKey[] = [
   "lessons",
 ];
 
-// Centralised user-facing labels (French). Keep in one place so the overlay
+// Centralised user-facing labels. Keep in one place so the overlay
 // and the tests can agree.
 export const PALETTE_GROUP_LABELS: Record<PaletteGroupKey, string> = {
-  jump: "Reprendre",
-  files: "Fichiers",
-  commands: "Commandes",
-  lessons: "Leçons",
+  jump: "Jump back in",
+  files: "Files",
+  commands: "Commands",
+  lessons: "Lessons",
 };
 
 // Soft palette shared with project cards / template cards so glyphs read at a

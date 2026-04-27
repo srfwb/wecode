@@ -31,7 +31,7 @@ export function ProjectCard({ project, index = 0 }: Props) {
         style={{ "--proj-idx": index } as React.CSSProperties}
         onClick={() => void openProject(project.id)}
         onContextMenu={onContext}
-        aria-label={`Ouvrir ${project.name}`}
+        aria-label={`Open ${project.name}`}
       >
         <div className={`home-proj-thumb home-proj-thumb--${project.kind}`}>
           <span>{project.kind.toUpperCase()}</span>
@@ -50,7 +50,7 @@ export function ProjectCard({ project, index = 0 }: Props) {
           )}
         </div>
         <div className="home-proj-when">{formatRelativeTime(project.lastOpenedAt)}</div>
-        <span className="home-proj-open">ouvrir ↵</span>
+        <span className="home-proj-open">open ↵</span>
       </button>
       {menu && (
         <ContextMenu
@@ -58,14 +58,14 @@ export function ProjectCard({ project, index = 0 }: Props) {
           y={menu.y}
           onClose={() => setMenu(null)}
           items={[
-            { label: "Ouvrir", onSelect: () => void openProject(project.id) },
+            { label: "Open", onSelect: () => void openProject(project.id) },
             {
-              label: "Ouvrir le dossier",
+              label: "Open folder",
               onSelect: () => void revealItemInDir(project.path),
             },
-            { label: "Renommer", onSelect: () => openRename({ id: project.id }) },
+            { label: "Rename", onSelect: () => openRename({ id: project.id }) },
             {
-              label: "Supprimer",
+              label: "Delete",
               destructive: true,
               onSelect: () => openDelete({ id: project.id }),
             },

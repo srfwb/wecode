@@ -46,7 +46,7 @@ export function StatusBar() {
 
   return (
     <footer className="status" role="contentinfo">
-      <span className="chip ok" title="Sauvegarde automatique active">
+      <span className="chip ok" title="Auto-save active">
         <svg className="i" viewBox="0 0 24 24" style={{ width: 10, height: 10 }} aria-hidden="true">
           <path d="m5 13 4 4L19 7" />
         </svg>
@@ -56,13 +56,13 @@ export function StatusBar() {
       <span className="chip">UTF-8</span>
       <span className="chip">LF</span>
       {cursor && (
-        <span className="chip" aria-label={`Ligne ${cursor.line}, colonne ${cursor.col}`}>
+        <span className="chip" aria-label={`Line ${cursor.line}, column ${cursor.col}`}>
           Ln {cursor.line}, Col {cursor.col}
         </span>
       )}
       <span className="spacer" />
       {lastSyncMs !== null && (
-        <span className="chip accent" title="Latence du dernier rafraîchissement preview">
+        <span className="chip accent" title="Last preview refresh latency">
           <svg
             className="i"
             viewBox="0 0 24 24"

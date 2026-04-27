@@ -12,11 +12,11 @@ export function HomeRailFoot() {
       <div className="home-rail-sep" aria-hidden="true" />
       <button type="button" className="home-rail-link" onClick={() => setShowChangelog(true)}>
         <IconShield />
-        Nouveautés de la {APP_VERSION}
+        What's new in {APP_VERSION}
       </button>
       <a className="home-rail-link">
         <IconHelp />
-        Docs et aide
+        Docs &amp; help
       </a>
       {showChangelog && <ChangelogModal onClose={() => setShowChangelog(false)} />}
     </div>

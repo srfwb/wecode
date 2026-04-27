@@ -16,8 +16,8 @@ export function HomeSearch() {
       <IconSearch />
       <input
         type="text"
-        placeholder="Rechercher un projet, une leçon ou ouvrir un fichier…"
-        aria-label="Rechercher"
+        placeholder="Search projects, lessons, or open a file…"
+        aria-label="Search"
         readOnly
         tabIndex={-1}
       />

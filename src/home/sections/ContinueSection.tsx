@@ -32,7 +32,7 @@ export function ContinueSection() {
   return (
     <section className="home-section">
       <div className="home-sec-head">
-        <h3>Reprends là où tu t'étais arrêté</h3>
+        <h3>Pick up where you left off</h3>
       </div>
       {lessonInProgress ? (
         <ContinueLessonCard
@@ -45,8 +45,8 @@ export function ContinueSection() {
       ) : (
         <EmptyState
           icon={<IconClock />}
-          title="Aucun projet en cours"
-          subtitle="Ouvre ou crée un projet pour le voir apparaître ici."
+          title="No project in progress"
+          subtitle="Open or create a project to see it appear here."
         />
       )}
     </section>

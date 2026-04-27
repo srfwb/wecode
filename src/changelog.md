@@ -1,5 +1,15 @@
 # What's new
 
+## v0.3.1 — April 27, 2026
+
+### Changed
+
+- The entire app is now in English — all labels, buttons, error messages, editor hints, lesson content, and the changelog itself.
+- Date format switched to US English.
+- Internal type values (`difficulty`, `HomeTab`) updated to English identifiers.
+
+---
+
 ## v0.3.0 — April 27, 2026
 
 ### Added

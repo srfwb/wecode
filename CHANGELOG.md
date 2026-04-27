@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] — 2026-04-27
+
+Full English translation — every UI string, editor hint, lesson content, and
+internal type value switched from French to English.
+
+### Changed
+
+- All UI labels, buttons, placeholders, tooltips, aria-labels, toast messages, and error messages are now in English.
+- Editor hover hints (~50 entries for HTML elements, attributes, and CSS properties) translated.
+- Lesson and challenge content (titles, descriptions, instructions, checkpoint labels) translated.
+- In-app changelog rewritten in English.
+- Home greeting changed from "Bienvenue dans WeCode" to "Welcome to WeCode".
+- Date format switched from `fr-FR` to `en-US`.
+- `LessonData.difficulty` type values: `"débutant" | "intermédiaire" | "avancé"` → `"beginner" | "intermediate" | "advanced"`.
+- `HomeTab` type: `"accueil"` → `"home"`.
+- `PALETTE_GROUP_LABELS` values translated.
+
 ## [0.3.0] — 2026-04-27
 
 Milestone 3: structured learning system with guided lessons and free-form

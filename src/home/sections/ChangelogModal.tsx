@@ -47,7 +47,7 @@ export function ChangelogModal({ onClose }: Props) {
         aria-labelledby="changelog-title"
       >
         <div id="changelog-title" className="modal__title">
-          Nouveautés
+          What's new
         </div>
         <div
           className="cl-body"
@@ -55,7 +55,7 @@ export function ChangelogModal({ onClose }: Props) {
         />
         <div className="modal__actions">
           <button type="button" onClick={onClose}>
-            Fermer
+            Close
           </button>
         </div>
       </div>

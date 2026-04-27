@@ -23,7 +23,7 @@ export function RecentProjectsSection() {
   return (
     <section className="home-section" onContextMenu={onSectionContext}>
       <div className="home-sec-head">
-        <h3>Projets récents</h3>
+        <h3>Recent projects</h3>
         {projects.length > 0 && <span className="home-sec-count">{projects.length}</span>}
       </div>
       {projects.length > 0 ? (
@@ -35,8 +35,8 @@ export function RecentProjectsSection() {
       ) : (
         <EmptyState
           icon={<IconSparkle />}
-          title="Pas encore de projets"
-          subtitle="La liste de tes projets récents arrivera avec le système de projets."
+          title="No projects yet"
+          subtitle="Your recent projects will appear here once you create or open one."
         />
       )}
       {menu && (
@@ -46,11 +46,11 @@ export function RecentProjectsSection() {
           onClose={() => setMenu(null)}
           items={[
             {
-              label: "Nouveau projet",
+              label: "New project",
               onSelect: () => openCreate({ templateId: "html-css" }),
             },
             {
-              label: "Rechercher…",
+              label: "Search…",
               onSelect: () => openPalette(),
             },
           ]}

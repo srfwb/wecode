@@ -22,7 +22,7 @@ export interface LessonData {
   type: "lesson" | "challenge";
   title: string;
   description: string;
-  difficulty: "débutant" | "intermédiaire" | "avancé";
+  difficulty: "beginner" | "intermediate" | "advanced";
   estimatedMinutes: number;
   tags: string[];
   allowFileOps: boolean;

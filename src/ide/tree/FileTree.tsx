@@ -137,18 +137,18 @@ export function FileTree() {
       onKeyDown={onTreeKeyDown}
       tabIndex={0}
       role="tree"
-      aria-label="Fichiers"
+      aria-label="Files"
       data-version={version}
     >
       <div className="sb-rail">
-        <span className="label">Fichiers</span>
+        <span className="label">Files</span>
         <div className="tools">
           {!fileOpsLocked && (
             <button
               type="button"
               className="ico-btn"
-              title="Nouveau fichier"
-              aria-label="Nouveau fichier"
+              title="New file"
+              aria-label="New file"
               onClick={startNewFileAtRoot}
             >
               <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
@@ -176,20 +176,20 @@ export function FileTree() {
           />
         ))}
       </ul>
-      {nodes.length === 0 && <div className="file-tree__empty">Aucun fichier</div>}
+      {nodes.length === 0 && <div className="file-tree__empty">No files</div>}
 
       <div className="sb-foot">
         <svg className="i" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
         </svg>
-        Sauvegarde auto active
+        Auto-save active
       </div>
 
       {menu && <ContextMenu x={menu.x} y={menu.y} items={menuItems} onClose={closeMenu} />}
 
       {prompt && (
         <PromptModal
-          title={prompt.kind === "create" ? "Nouveau fichier" : "Renommer"}
+          title={prompt.kind === "create" ? "New file" : "Rename"}
           initial={prompt.initial}
           allowSlash={prompt.kind === "create"}
           onSubmit={submitPrompt}
@@ -199,9 +199,9 @@ export function FileTree() {
 
       {pendingDelete && (
         <ConfirmDialog
-          title="Supprimer le fichier"
-          message={`Supprimer ${pendingDelete} ? Cette action est irréversible.`}
-          confirmLabel="Supprimer"
+          title="Delete file"
+          message={`Delete ${pendingDelete}? This action cannot be undone.`}
+          confirmLabel="Delete"
           destructive
           onConfirm={confirmDelete}
           onCancel={() => setPendingDelete(null)}
@@ -290,17 +290,17 @@ function buildMenuItems(
     if (target.kind === "folder") return [];
     return [
       {
-        label: "Ouvrir",
+        label: "Open",
         onSelect: () => useIdeStore.getState().openFile(target.path),
       },
     ];
   }
   if (target.kind === "folder") {
-    return [{ label: "Nouveau fichier", onSelect: () => actions.startCreate(target.path) }];
+    return [{ label: "New file", onSelect: () => actions.startCreate(target.path) }];
   }
   return [
-    { label: "Renommer", onSelect: () => actions.startRename(target.path) },
-    { label: "Supprimer", destructive: true, onSelect: () => actions.deletePath(target.path) },
+    { label: "Rename", onSelect: () => actions.startRename(target.path) },
+    { label: "Delete", destructive: true, onSelect: () => actions.deletePath(target.path) },
   ];
 }
 
@@ -321,14 +321,14 @@ function validatePromptValue(value: string, allowSlash: boolean): string {
   const trimmed = value.trim();
   if (trimmed === "") return "";
   if (!allowSlash && trimmed.includes("/")) {
-    return "Le nom ne peut pas contenir « / ».";
+    return 'The name cannot contain "/".';
   }
   if (FORBIDDEN_NAME_CHARS.test(trimmed)) {
-    return "Caractère interdit dans le nom.";
+    return "Forbidden character in name.";
   }
   for (const segment of trimmed.split("/")) {
     if (segment === "." || segment === "..") {
-      return "Le nom ne peut pas contenir « . » ou « .. ».";
+      return 'The name cannot contain "." or "..".';
     }
   }
   return "";
@@ -366,16 +366,16 @@ function PromptModal({ title, initial, allowSlash, onSubmit, onCancel }: PromptM
             className="modal__input"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            placeholder="nom du fichier"
+            placeholder="file name"
           />
           {error && <span className="modal__error">{error}</span>}
         </label>
         <div className="modal__actions">
           <button type="button" onClick={onCancel}>
-            Annuler
+            Cancel
           </button>
           <button type="submit" disabled={!canSubmit}>
-            Valider
+            OK
           </button>
         </div>
       </form>

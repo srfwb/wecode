@@ -1,4 +1,4 @@
-// Map Rust- and VFS-level error strings to French, user-friendly messages.
+// Map Rust- and VFS-level error strings to user-friendly messages.
 // The backend speaks in English technical terms ("forbidden character in
 // segment", "rel_path must start with '/'"), which is fine for logs but ugly
 // in a pedagogical UI aimed at learners. This layer sits at the UI boundary.
@@ -7,28 +7,28 @@ export function localizeFileError(err: unknown): string {
   const lower = raw.toLowerCase();
 
   if (lower.includes("forbidden character")) {
-    return 'Le nom contient un caractère interdit (/, \\, :, *, ?, ", <, >, |).';
+    return 'The name contains a forbidden character (/, \\, :, *, ?, ", <, >, |).';
   }
   if (lower.includes("illegal component") || lower.includes("invalid path segment")) {
-    return "Le nom ne peut pas contenir « . » ou « .. ».";
+    return 'The name cannot contain "." or "..".';
   }
   if (lower.includes("rel_path must start with") || lower.includes("rel_path is empty")) {
-    return "Nom de fichier invalide.";
+    return "Invalid file name.";
   }
   if (lower.includes("must use forward slashes")) {
-    return "Utilise « / » pour séparer les dossiers, pas « \\ ».";
+    return 'Use "/" to separate folders, not "\\".';
   }
   if (lower.includes("already exists") || lower.includes("target already exists")) {
-    return "Un fichier du même nom existe déjà.";
+    return "A file with that name already exists.";
   }
   if (lower.includes("source not found") || lower.includes("file not found")) {
-    return "Ce fichier n'existe plus.";
+    return "This file no longer exists.";
   }
   if (lower.includes("refusing to rename directory")) {
-    return "Impossible de renommer un dossier.";
+    return "Cannot rename a folder.";
   }
   if (lower.includes("refusing to delete directory")) {
-    return "Impossible de supprimer un dossier directement.";
+    return "Cannot delete a folder directly.";
   }
   // Fall back to the raw message — better than hiding the problem, and gives
   // us something to grep for in bug reports.

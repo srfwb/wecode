@@ -38,7 +38,7 @@ export function Toasts() {
           <button
             type="button"
             className="toast__close"
-            aria-label="Fermer la notification"
+            aria-label="Close notification"
             onClick={() => dismiss(t.id)}
           >
             ×

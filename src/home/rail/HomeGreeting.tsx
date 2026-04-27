@@ -1,5 +1,5 @@
 function formatDate(now: Date): string {
-  return new Intl.DateTimeFormat("fr-FR", {
+  return new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -12,7 +12,7 @@ export function HomeGreeting() {
     <div className="home-greet">
       <div className="home-greet-date">{dateLabel}</div>
       <h1 className="home-greet-title">
-        Bienvenue dans <span className="home-greet-accent">WeCode</span>.
+        Welcome to <span className="home-greet-accent">WeCode</span>.
       </h1>
     </div>
   );

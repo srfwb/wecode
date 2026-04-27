@@ -19,10 +19,10 @@ describe("HomeShell", () => {
     });
   });
 
-  it("renders the welcome headline and the Projets récents section header", () => {
+  it("renders the welcome headline and the Recent projects section header", () => {
     render(<HomeShell />);
 
-    expect(screen.getByText(/Bienvenue dans/i)).toBeTruthy();
-    expect(screen.getByRole("heading", { name: /Projets récents/i })).toBeTruthy();
+    expect(screen.getByText(/Welcome to/i)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /Recent projects/i })).toBeTruthy();
   });
 });

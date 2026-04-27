@@ -15,7 +15,7 @@ export function ChallengesListView() {
   return (
     <section className="home-section">
       <div className="home-sec-head">
-        <h3>Tous les challenges</h3>
+        <h3>All challenges</h3>
         <span className="home-sec-count">
           {completed} / {CHALLENGES.length}
         </span>

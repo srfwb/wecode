@@ -67,7 +67,7 @@ export function attachDiskAutoSave(vfs: VirtualFS): AutoSaveHandle {
           }
         } catch (err) {
           console.error("disk autosave job failed", relPath, err);
-          toast.error(`Impossible de sauvegarder ${relPath} sur le disque.`);
+          toast.error(`Failed to save ${relPath} to disk.`);
         }
       }
       const paths = vfs.listFiles();

@@ -23,17 +23,17 @@ export function LessonCard({
       type="button"
       className={`lesson-card${status === "in-progress" ? " lesson-card--in-progress" : ""}`}
       onClick={onStart}
-      aria-label={`Commencer ${lesson.title}`}
+      aria-label={`Start ${lesson.title}`}
     >
       <div className="lesson-card__header">
         {status === "completed" && (
-          <span className="lesson-card__badge lesson-card__badge--done">✓ terminé</span>
+          <span className="lesson-card__badge lesson-card__badge--done">✓ completed</span>
         )}
         {status === "in-progress" && (
-          <span className="lesson-card__badge lesson-card__badge--active">● en cours</span>
+          <span className="lesson-card__badge lesson-card__badge--active">● in progress</span>
         )}
         {status === "not-started" && (
-          <span className="lesson-card__badge lesson-card__badge--todo">pas commencé</span>
+          <span className="lesson-card__badge lesson-card__badge--todo">not started</span>
         )}
         <span className="lesson-card__time">~{lesson.estimatedMinutes} min</span>
       </div>

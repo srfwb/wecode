@@ -31,9 +31,9 @@ describe("validateProjectName", () => {
   });
 
   it("rejects forbidden filesystem characters", () => {
-    expect(validateProjectName("hello/world")).toMatch(/contenir/);
-    expect(validateProjectName("hello:world")).toMatch(/contenir/);
-    expect(validateProjectName("hello?world")).toMatch(/contenir/);
+    expect(validateProjectName("hello/world")).toMatch(/cannot contain/i);
+    expect(validateProjectName("hello:world")).toMatch(/cannot contain/i);
+    expect(validateProjectName("hello?world")).toMatch(/cannot contain/i);
   });
 
   it("rejects special names . and ..", () => {
@@ -42,20 +42,20 @@ describe("validateProjectName", () => {
   });
 
   it("rejects names longer than 80 characters", () => {
-    expect(validateProjectName("x".repeat(81))).toMatch(/trop long/);
+    expect(validateProjectName("x".repeat(81))).toMatch(/too long/i);
   });
 
   it("rejects windows reserved device names", () => {
-    expect(validateProjectName("CON")).toMatch(/réservé/);
-    expect(validateProjectName("prn")).toMatch(/réservé/);
-    expect(validateProjectName("NUL")).toMatch(/réservé/);
-    expect(validateProjectName("COM1")).toMatch(/réservé/);
-    expect(validateProjectName("LPT9")).toMatch(/réservé/);
+    expect(validateProjectName("CON")).toMatch(/reserved/i);
+    expect(validateProjectName("prn")).toMatch(/reserved/i);
+    expect(validateProjectName("NUL")).toMatch(/reserved/i);
+    expect(validateProjectName("COM1")).toMatch(/reserved/i);
+    expect(validateProjectName("LPT9")).toMatch(/reserved/i);
   });
 
   it("rejects windows reserved names even with an extension", () => {
     // CON.txt is as broken as CON on Windows.
-    expect(validateProjectName("CON.txt")).toMatch(/réservé/);
+    expect(validateProjectName("CON.txt")).toMatch(/reserved/i);
   });
 
   it("allows names that merely contain a reserved substring", () => {

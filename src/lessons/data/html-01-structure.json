@@ -1,9 +1,9 @@
 {
   "id": "html-01-structure",
   "type": "lesson",
-  "title": "La structure d'une page HTML",
-  "description": "Découvre les balises de base : html, head, body, titre et paragraphe.",
-  "difficulty": "débutant",
+  "title": "HTML Page Structure",
+  "description": "Learn the basic tags: html, head, body, title, and paragraph.",
+  "difficulty": "beginner",
   "estimatedMinutes": 10,
   "tags": ["html"],
   "allowFileOps": false,
@@ -12,11 +12,11 @@
   },
   "steps": [
     {
-      "heading": "Construis le squelette",
+      "heading": "Build the skeleton",
       "paragraphs": [
         {
           "kind": "text",
-          "content": "Une page HTML est organisée en deux grandes parties : le <head> contient les informations invisibles (comme le titre affiché dans l'onglet), et le <body> contient tout ce que le visiteur voit. À l'intérieur du <head>, place un <title> pour nommer ta page. Dans le <body>, utilise <h1> pour un titre visible et <p> pour un paragraphe de texte."
+          "content": "An HTML page is organized into two main parts: the <head> holds invisible information (like the title shown in the tab), and the <body> holds everything the visitor sees. Inside the <head>, add a <title> to name your page. In the <body>, use <h1> for a visible heading and <p> for a paragraph of text."
         },
         {
           "kind": "code",
@@ -26,27 +26,27 @@
       "checkpoints": [
         {
           "id": "has-head",
-          "label": "Ajoute une balise <head>",
+          "label": "Add a `<head>` tag",
           "rule": { "type": "element-exists", "selector": "head", "file": "/index.html" }
         },
         {
           "id": "has-body",
-          "label": "Ajoute une balise <body>",
+          "label": "Add a `<body>` tag",
           "rule": { "type": "element-exists", "selector": "body", "file": "/index.html" }
         },
         {
           "id": "has-title",
-          "label": "Ajoute un <title> dans le <head>",
+          "label": "Add a `<title>` inside `<head>`",
           "rule": { "type": "nesting", "parent": "head", "child": "title", "file": "/index.html" }
         },
         {
           "id": "has-h1",
-          "label": "Ajoute un titre <h1> dans le <body>",
+          "label": "Add an `<h1>` heading inside `<body>`",
           "rule": { "type": "nesting", "parent": "body", "child": "h1", "file": "/index.html" }
         },
         {
           "id": "has-p",
-          "label": "Ajoute un paragraphe <p>",
+          "label": "Add a `<p>` paragraph",
           "rule": { "type": "element-exists", "selector": "p", "file": "/index.html" }
         }
       ]

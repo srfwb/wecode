@@ -14,12 +14,12 @@ export function ContinueLessonCard({ lesson, doneCount, totalCount }: Props) {
       <div className="home-continue-main">
         <div className="home-continue-eyebrow">
           <span className="home-continue-pulse" aria-hidden="true" />
-          Reprends là où tu t'étais arrêté
+          Pick up where you left off
         </div>
         <h2 className="home-continue-title">{lesson.title}</h2>
         <p className="home-continue-sub">
           <span className="home-continue-meta">
-            {lesson.type === "lesson" ? "Leçon" : "Challenge"} · checkpoint {doneCount} /{" "}
+            {lesson.type === "lesson" ? "Lesson" : "Challenge"} · checkpoint {doneCount} /{" "}
             {totalCount}
           </span>
         </p>
@@ -30,7 +30,7 @@ export function ContinueLessonCard({ lesson, doneCount, totalCount }: Props) {
           className="home-btn home-btn--primary"
           onClick={() => useLessonStore.getState().startLesson(lesson.id)}
         >
-          Continuer
+          Continue
           <IconChevronRight />
         </button>
       </div>

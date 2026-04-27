@@ -20,13 +20,13 @@ export function HomeNav() {
     <nav className="home-nav" aria-label="Navigation principale">
       <HomeNavItem
         icon={<IconHome />}
-        label="Accueil"
-        active={tab === "accueil"}
-        onClick={() => setTab("accueil")}
+        label="Home"
+        active={tab === "home"}
+        onClick={() => setTab("home")}
       />
       <HomeNavItem
         icon={<IconBook />}
-        label="Leçons"
+        label="Lessons"
         active={tab === "lessons"}
         onClick={() => setTab("lessons")}
         counter={`${completed} / ${LESSONS.length}`}

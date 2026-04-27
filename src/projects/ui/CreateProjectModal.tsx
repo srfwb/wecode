@@ -42,7 +42,7 @@ export function CreateProjectModal({ initialTemplateId }: Props) {
       const picked = await openDialog({
         directory: true,
         multiple: false,
-        title: "Choisis un emplacement",
+        title: "Choose a location",
         ...(parentDir ? { defaultPath: parentDir } : {}),
       });
       if (typeof picked === "string") setParentDir(picked);
@@ -57,7 +57,7 @@ export function CreateProjectModal({ initialTemplateId }: Props) {
     setSubmitting(true);
     try {
       await createProject({ name: name.trim(), templateId, parentDir });
-      toast.success(`Projet « ${name.trim()} » créé.`);
+      toast.success(`Project "${name.trim()}" created.`);
       closeAll();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -79,22 +79,22 @@ export function CreateProjectModal({ initialTemplateId }: Props) {
         onSubmit={submit}
       >
         <div id="create-project-title" className="modal__title">
-          Nouveau projet
+          New project
         </div>
         <label className="modal__field">
-          <span className="modal__label">Nom du projet</span>
+          <span className="modal__label">Project name</span>
           <input
             className="modal__input"
             value={name}
             autoFocus
             onChange={(e) => setName(e.target.value)}
-            placeholder="Mon super projet"
+            placeholder="My awesome project"
           />
           {nameError && <span className="modal__error">{nameError}</span>}
         </label>
 
         <div className="modal__field">
-          <span className="modal__label">Modèle</span>
+          <span className="modal__label">Template</span>
           <div className="modal__template-list">
             {TEMPLATES.map((t) => (
               <button
@@ -111,23 +111,23 @@ export function CreateProjectModal({ initialTemplateId }: Props) {
         </div>
 
         <div className="modal__field">
-          <span className="modal__label">Emplacement</span>
+          <span className="modal__label">Location</span>
           <div className="modal__location">
             <span className="modal__location-path" title={finalPath || parentDir}>
               {finalPath || `${parentDir}/…`}
             </span>
             <button type="button" className="modal__btn-ghost" onClick={() => void pickLocation()}>
-              Changer…
+              Change…
             </button>
           </div>
         </div>
 
         <div className="modal__actions">
           <button type="button" onClick={closeAll} disabled={submitting}>
-            Annuler
+            Cancel
           </button>
           <button type="submit" disabled={!canSubmit}>
-            {submitting ? "Création…" : "Créer"}
+            {submitting ? "Creating…" : "Create"}
           </button>
         </div>
       </form>

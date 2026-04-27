@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type HomeTab = "accueil" | "lessons" | "challenges";
+export type HomeTab = "home" | "lessons" | "challenges";
 
 interface HomeState {
   tab: HomeTab;
@@ -8,6 +8,6 @@ interface HomeState {
 }
 
 export const useHomeStore = create<HomeState>((set) => ({
-  tab: "accueil",
+  tab: "home",
   setTab: (tab) => set({ tab }),
 }));

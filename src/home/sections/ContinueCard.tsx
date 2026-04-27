@@ -20,8 +20,8 @@ export function ContinueCard({ project }: Props) {
         <h2 className="home-continue-title">{project.name}</h2>
         <p className="home-continue-sub">
           <span className="home-continue-meta">
-            {project.fileCount} file{project.fileCount > 1 ? "s" : ""} · {project.lineCount}{" "}
-            line{project.lineCount > 1 ? "s" : ""}
+            {project.fileCount} file{project.fileCount > 1 ? "s" : ""} · {project.lineCount} line
+            {project.lineCount > 1 ? "s" : ""}
           </span>
           <span className="home-continue-meta">
             edited {formatRelativeTime(project.lastOpenedAt)}

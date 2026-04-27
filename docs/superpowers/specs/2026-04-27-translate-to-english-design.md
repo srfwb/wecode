@@ -29,49 +29,49 @@ Entire file rewritten in English. Section headings `Ajouté / Amélioré / Corri
 
 ### 5. Home components (`src/home/`)
 
-| File | French strings |
-|------|----------------|
-| `HomeNav.tsx` | "Accueil", "Leçons" labels |
-| `HomeRailFoot.tsx` | "Nouveautés de la", "Docs et aide" |
-| `HomeSearch.tsx` | placeholder, aria-label |
-| `ContinueCard.tsx` | eyebrow, meta text, buttons |
-| `ContinueLessonCard.tsx` | eyebrow, subtitle, button |
-| `ContinueSection.tsx` | heading, empty state |
+| File                        | French strings                     |
+| --------------------------- | ---------------------------------- |
+| `HomeNav.tsx`               | "Accueil", "Leçons" labels         |
+| `HomeRailFoot.tsx`          | "Nouveautés de la", "Docs et aide" |
+| `HomeSearch.tsx`            | placeholder, aria-label            |
+| `ContinueCard.tsx`          | eyebrow, meta text, buttons        |
+| `ContinueLessonCard.tsx`    | eyebrow, subtitle, button          |
+| `ContinueSection.tsx`       | heading, empty state               |
 | `RecentProjectsSection.tsx` | heading, empty state, context menu |
-| `ChangelogModal.tsx` | title, close button |
-| `LessonCard.tsx` | status badges, time label |
-| `LessonsListView.tsx` | heading |
-| `ChallengesListView.tsx` | heading |
+| `ChangelogModal.tsx`        | title, close button                |
+| `LessonCard.tsx`            | status badges, time label          |
+| `LessonsListView.tsx`       | heading                            |
+| `ChallengesListView.tsx`    | heading                            |
 
 ### 6. IDE shell components (`src/ide/`)
 
-| File | French strings |
-|------|----------------|
-| `Toolbar.tsx` | aria-labels, placeholder, tooltips |
-| `StatusBar.tsx` | (reads from statusBarFormat) |
-| `statusBarFormat.ts` | "Texte", "Sauvegarde auto", "Sauvegardé il y a..." |
-| `ConfirmDialog.tsx` | default confirm/cancel labels |
-| `Toasts.tsx` | aria-label |
-| `FileTree.tsx` | labels, aria-labels, modal titles, context menu items |
-| `LessonDock.tsx` | "Leçon"/"Challenge", "points", hint footer |
-| `OpenFilesTabs.tsx` | empty state, aria-label |
-| `fileErrorMessages.ts` | all 8 error messages |
+| File                   | French strings                                        |
+| ---------------------- | ----------------------------------------------------- |
+| `Toolbar.tsx`          | aria-labels, placeholder, tooltips                    |
+| `StatusBar.tsx`        | (reads from statusBarFormat)                          |
+| `statusBarFormat.ts`   | "Texte", "Sauvegarde auto", "Sauvegardé il y a..."    |
+| `ConfirmDialog.tsx`    | default confirm/cancel labels                         |
+| `Toasts.tsx`           | aria-label                                            |
+| `FileTree.tsx`         | labels, aria-labels, modal titles, context menu items |
+| `LessonDock.tsx`       | "Leçon"/"Challenge", "points", hint footer            |
+| `OpenFilesTabs.tsx`    | empty state, aria-label                               |
+| `fileErrorMessages.ts` | all 8 error messages                                  |
 
 ### 7. Project modals (`src/projects/ui/`)
 
-| File | French strings |
-|------|----------------|
-| `CreateProjectModal.tsx` | title, field labels, placeholder, toast, buttons |
-| `DeleteProjectDialog.tsx` | title, body, checkbox, warning, toast, buttons |
-| `RenameProjectModal.tsx` | title, body, label, toast, buttons |
+| File                      | French strings                                   |
+| ------------------------- | ------------------------------------------------ |
+| `CreateProjectModal.tsx`  | title, field labels, placeholder, toast, buttons |
+| `DeleteProjectDialog.tsx` | title, body, checkbox, warning, toast, buttons   |
+| `RenameProjectModal.tsx`  | title, body, label, toast, buttons               |
 
 ### 8. Palette (`src/palette/`)
 
-| File | French strings |
-|------|----------------|
+| File                 | French strings                                     |
+| -------------------- | -------------------------------------------------- |
 | `CommandPalette.tsx` | aria-label, placeholder, empty state, footer hints |
-| `commands.ts` | command title/subtitle |
-| `sources.ts` | pill labels, lesson placeholder toast |
+| `commands.ts`        | command title/subtitle                             |
+| `sources.ts`         | pill labels, lesson placeholder toast              |
 
 ### 9. Other
 

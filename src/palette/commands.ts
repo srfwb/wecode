@@ -1,6 +1,6 @@
 import { useProjectModalStore } from "../projects/ui/modalStore";
 
-// Global actions surfaced in the palette's "Commandes" section. v1 ships the
+// Global actions surfaced in the palette's "Commands" section. v1 ships the
 // Home-relevant shortcuts only; `reloadPreview`, `goHome` and friends will
 // land when the palette works from the IDE too.
 export interface PaletteCommand {
@@ -14,9 +14,9 @@ export interface PaletteCommand {
 export const COMMANDS: readonly PaletteCommand[] = [
   {
     id: "open-create-project",
-    title: "Nouveau projet",
-    subtitle: "Partir d'un modèle",
-    pill: "commande",
+    title: "New project",
+    subtitle: "From a template",
+    pill: "command",
     run: () => {
       useProjectModalStore.getState().openCreate({ templateId: "html-css" });
     },

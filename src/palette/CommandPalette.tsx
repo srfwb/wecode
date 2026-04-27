@@ -101,7 +101,7 @@ function PaletteDialog(): ReactElement {
         className="palette-root"
         role="dialog"
         aria-modal="true"
-        aria-label="Palette de commandes"
+        aria-label="Command palette"
       >
         <div className={`palette-bar${hasQuery ? " palette-bar--has-query" : ""}`}>
           <svg className="palette-ico" viewBox="0 0 24 24" aria-hidden="true">
@@ -114,16 +114,16 @@ function PaletteDialog(): ReactElement {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Rechercher un projet, une leçon ou ouvrir un fichier…"
+            placeholder="Search projects, lessons, or open a file…"
             autoComplete="off"
-            aria-label="Rechercher"
+            aria-label="Search"
           />
           {hasQuery && (
             <button
               type="button"
               className="palette-clear"
               onClick={() => setQuery("")}
-              aria-label="Effacer la recherche"
+              aria-label="Clear search"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M6 6l12 12M6 18 18 6" />
@@ -135,7 +135,7 @@ function PaletteDialog(): ReactElement {
 
         <div className="palette-results">
           {flatItems.length === 0 ? (
-            <div className="palette-empty">Aucun résultat pour « {query} ».</div>
+            <div className="palette-empty">No results for "{query}".</div>
           ) : (
             <div className="palette-body">
               {filteredGroups.map((group) => (
@@ -166,7 +166,7 @@ function PaletteDialog(): ReactElement {
                         </span>
                         <span className="palette-meta">
                           {item.pill && <span className="palette-pill">{item.pill}</span>}
-                          <span className="palette-kbd-ret">↵ ouvrir</span>
+                          <span className="palette-kbd-ret">↵ open</span>
                         </span>
                       </div>
                     );
@@ -179,13 +179,13 @@ function PaletteDialog(): ReactElement {
           <div className="palette-foot">
             <span className="palette-fk">
               <kbd>↑</kbd>
-              <kbd>↓</kbd> naviguer
+              <kbd>↓</kbd> navigate
             </span>
             <span className="palette-fk">
-              <kbd>↵</kbd> ouvrir
+              <kbd>↵</kbd> open
             </span>
             <span className="palette-fk">
-              <kbd>esc</kbd> fermer
+              <kbd>esc</kbd> close
             </span>
           </div>
         </div>

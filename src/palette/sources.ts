@@ -33,7 +33,7 @@ export function buildJumpItems(): PaletteItem[] {
       group: "jump",
       title: project.name,
       subtitle: project.path,
-      pill: "projet",
+      pill: "project",
       icon: {
         glyph: project.kind === "blank" ? "·" : project.kind.toUpperCase().slice(0, 3),
         tone: project.kind,
@@ -59,7 +59,7 @@ export function buildFileItems(): PaletteItem[] {
       group: "files",
       title: basename(path),
       subtitle: path,
-      pill: "fichier",
+      pill: "file",
       icon,
       onSelect: () => {
         const { view, setView, openFile } = useIdeStore.getState();
@@ -85,26 +85,26 @@ export function buildCommandItems(): PaletteItem[] {
   }));
 }
 
-// Single placeholder row so the Leçons section shows up even before the
-// curriculum lands. Selecting it toasts "Bientôt disponible".
+// Single placeholder row so the Lessons section shows up even before the
+// curriculum lands. Selecting it toasts "Coming soon".
 export function buildLessonItems(): PaletteItem[] {
   return [
     {
       id: "lesson:placeholder",
       group: "lessons",
-      title: "Parcours de leçons",
-      subtitle: "Bientôt disponible",
-      pill: "leçon",
+      title: "Lesson path",
+      subtitle: "Coming soon",
+      pill: "lesson",
       icon: { glyph: "L", tone: "lesson" },
       onSelect: () => {
-        toast.info("Bientôt disponible");
+        toast.info("Coming soon");
       },
     },
   ];
 }
 
 // Orchestrator: assemble every group in the canonical order and drop those
-// that came back empty (typically "Fichiers" when no project is active).
+// that came back empty (typically "Files" when no project is active).
 export function buildAllGroups(): PaletteGroup[] {
   const bucket: Record<string, PaletteItem[]> = {
     jump: buildJumpItems(),
